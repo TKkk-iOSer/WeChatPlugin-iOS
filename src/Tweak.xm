@@ -23,12 +23,10 @@
 
     SayHelloDataLogic *helloDataLogic = [self valueForKey:@"m_DataLogic"];
     NSMutableArray *m_arrHellos = [helloDataLogic valueForKey:@"m_arrHellos"];
-    NSLog(@"logic = %@ \n m_arrHellos = %@",helloDataLogic,m_arrHellos);
     for (int idx = 0;idx < m_arrHellos.count;idx++) {
         CPushContact *contact = [helloDataLogic getContactForIndex:idx];
 
         if (![contact isMyContact] && [contact.m_nsDes isEqualToString:verifyText]) {
-            NSLog(@"未添加的好友");
             CContactVerifyLogic *verifyLogic = [[%c(CContactVerifyLogic) alloc] init];
             CVerifyContactWrap *wrap = [[%c(CVerifyContactWrap) alloc] init];
             [wrap setM_nsUsrName:contact.m_nsEncodeUserName];
@@ -56,9 +54,7 @@
 	%orig;
 
 	MMTableViewInfo *tableViewInfo = MSHookIvar<id>(self, "m_tableViewInfo");
-
 	MMTableViewSectionInfo *sectionInfo = [%c(MMTableViewSectionInfo) sectionInfoDefaut];
-
 	MMTableViewCellInfo *settingCell = [%c(MMTableViewCellInfo) normalCellForSel:@selector(setting) target:self title:@"TK小助手" accessoryType:1];
 	[sectionInfo addCell:settingCell];
 	[tableViewInfo insertSection:sectionInfo At:0];
