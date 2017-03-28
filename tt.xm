@@ -1,0 +1,49 @@
+%hook SayHelloViewController
++ (void)OnViewDetail:(id)arg1 prarentViewController:(id)arg2 { %log; %orig; }
++ (void)makeHelloCell:(id)arg1 helloMsg:(id)arg2 delegate:(id)arg3 { %log; %orig; }
+- (void).cxx_destruct { %log; %orig; }
+- (id)GetClearTip { %log; id r = %orig; HBLogDebug(@" = %@", r); return r; }
+- (void)OnClear:(id)arg1 { %log; %orig; }
+- (void)OnReturn { %log; %orig; }
+- (void)OnSayHelloDataChange { %log; %orig; }
+- (void)OnSayHelloDataSendVerifyMsg:(id)arg1 { %log; %orig; }
+- (void)OnSayHelloDataVerifyContactOK:(id)arg1 { %log; %orig; }
+- (void)actionSheet:(id)arg1 clickedButtonAtIndex:(long long)arg2 { %log; %orig; }
+- (void)addGoogleFriend { %log; %orig; }
+- (void)addMobileFriend { %log; %orig; }
+- (void)alertView:(id)arg1 clickedButtonAtIndex:(long long)arg2 { %log; %orig; }
+- (void)bindPhoneReturn { %log; %orig; }
+- (void)dealloc { %log; %orig; }
+- (id)getViewController { %log; id r = %orig; HBLogDebug(@" = %@", r); return r; }
+- (void)initData { %log; %orig; }
+- (void)initTableView { %log; %orig; }
+- (void)initView { %log; %orig; }
+- (void)setM_uiScene:(unsigned int )m_uiScene { %log; %orig; }
+- (unsigned int )m_uiScene { %log; unsigned int  r = %orig; HBLogDebug(@" = %u", r); return r; }
+- (id)makeNearByHeaderView { %log; id r = %orig; HBLogDebug(@" = %@", r); return r; }
+- (id)makeNewFriendHeaderView { %log; id r = %orig; HBLogDebug(@" = %@", r); return r; }
+- (long long)numberOfSectionsInTableView:(id)arg1 { %log; long long r = %orig; HBLogDebug(@" = %lld", r); return r; }
+- (void)onAddContact { %log; %orig; }
+- (void)onClearMyLbsDataFinishedWithResult:(_Bool)arg1 { %log; %orig; }
+- (void)onClearNearHeaderClicked:(id)arg1 { %log; %orig; }
+- (void)onContactsItemViewRightButtonClick:(id)arg1 { %log; %orig; }
+- (void)onMainWindowFrameChanged { %log; %orig; }
+- (_Bool)shouldShowNearByHeaderView { %log; _Bool r = %orig; HBLogDebug(@" = %d", r); return r; }
+- (id)tableView:(id)arg1 cellForRowAtIndexPath:(id)arg2 { %log; id r = %orig; HBLogDebug(@" = %@", r); return r; }
+- (void)tableView:(id)arg1 commitEditingStyle:(long long)arg2 forRowAtIndexPath:(id)arg3 { %log; %orig; }
+- (void)tableView:(id)arg1 didSelectRowAtIndexPath:(id)arg2 { %log; %orig; }
+- (long long)tableView:(id)arg1 editingStyleForRowAtIndexPath:(id)arg2 { %log; long long r = %orig; HBLogDebug(@" = %lld", r); return r; }
+- (double)tableView:(id)arg1 heightForRowAtIndexPath:(id)arg2 { %log; double r = %orig; HBLogDebug(@" = %f", r); return r; }
+- (long long)tableView:(id)arg1 numberOfRowsInSection:(long long)arg2 { %log; long long r = %orig; HBLogDebug(@" = %lld", r); return r; }
+- (void)tableView:(id)arg1 willDisplayCell:(id)arg2 forRowAtIndexPath:(id)arg3 { %log; %orig; }
+- (void)updateHeaderView { %log; %orig; }
+- (void)updateNoHello { %log; %orig; }
+- (void)verifyContactWithOpCode:(id)arg1 opcode:(unsigned int)arg2 { %log; %orig; }
+- (void)viewDidLayoutSubviews { %log; %orig; }
+- (void)viewDidLoad { %log; %orig; }
+- (void)willAppear { %log; %orig; }
+- (NSString *)debugDescription { %log; NSString * r = %orig; HBLogDebug(@" = %@", r); return r; }
+- (NSString *)description { %log; NSString * r = %orig; HBLogDebug(@" = %@", r); return r; }
+- (unsigned long long )hash { %log; unsigned long long  r = %orig; HBLogDebug(@" = %llu", r); return r; }
+- (Class )superclass { %log; Class  r = %orig; HBLogDebug(@" = %@", r); return r; }
+%end
