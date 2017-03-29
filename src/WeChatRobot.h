@@ -6,7 +6,33 @@
 //  Copyright © 2017年 TK. All rights reserved.
 //
 
-#pragma mark - Model
+#pragma mark - 聊天
+
+
+@interface CMessageWrap : NSObject
+
+- (id)initWithMsgType:(long long)arg1;
+@property(retain, nonatomic) NSString *m_nsContent; // @synthesize m_nsContent;
+@property(retain, nonatomic) NSString *m_nsToUsr; // @synthesize m_nsDisplayName;
+@property(retain, nonatomic) NSString *m_nsFromUsr; // @synthesize m_nsFromUsr;
+@property(nonatomic) unsigned int m_uiCreateTime; // @synthesize m_uiCreateTime;
+@property(nonatomic) unsigned int m_uiStatus; // @synthesize m_uiStatus;
+@end
+
+@interface MMNewSessionMgr : NSObject
+- (unsigned int)GenSendMsgTime;
+@end
+
+@interface CMessageMgr : NSObject
+-(void)AddMsg:(id)arg1 MsgWrap:(id)arg2;
+@end
+
+@interface SettingUtil : NSObject
++ (id)getLocalUsrName:(unsigned int)arg1;
+@end
+
+
+#pragma mark - MODEL
 @interface CBaseContact : NSObject
 
 @property(retain, nonatomic) NSString *m_nsEncodeUserName; // @synthesize m_nsEncodeUserName;
@@ -26,6 +52,7 @@
 @property(retain, nonatomic) NSString *m_nsSourceNickName;
 @property(retain, nonatomic) NSString *m_nsSourceUserName;
 @property(retain, nonatomic) NSString *m_nsTicket;
+@property(retain, nonatomic) NSString *m_nsUsrName;
 
 -(BOOL)isMyContact;
 
@@ -63,10 +90,11 @@
 @interface SayHelloViewController : UIViewController
 
 @property (nonatomic, copy) SayHelloDataLogic *m_DataLogic;
-- (void)OnSayHelloDataChange;
+- (void)OnSayHelloDataVerifyContactOK:(CPushContact *)arg1;
 
 // new
 - (void)addAutoVerifyAction;
+- (void)sendMsg:(NSString *)msg toContact:(CPushContact *)contact;
 
 @end
 

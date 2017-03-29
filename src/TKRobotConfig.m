@@ -8,7 +8,8 @@
 
 #import "TKRobotConfig.h"
 
-static NSString * const kAutoContactVerifyTextKey = @"kAutoContactVerifyTextKey";
+static NSString * const kTKAutoContactVerifyTextKey = @"kTKAutoContactVerifyTextKey";
+static NSString * const kTKWelcomesTextKey = @"kTKWelcomesTextKey";
 
 @implementation TKRobotConfig
 
@@ -18,7 +19,7 @@ static NSString * const kAutoContactVerifyTextKey = @"kAutoContactVerifyTextKey"
     dispatch_once(&onceToken, ^{
         config = [[TKRobotConfig alloc] init];
     });
-    
+
     return config;
 }
 
@@ -26,14 +27,21 @@ static NSString * const kAutoContactVerifyTextKey = @"kAutoContactVerifyTextKey"
 {
     self = [super init];
     if (self) {
-        _autoContactVerifyText = [[NSUserDefaults standardUserDefaults] objectForKey:kAutoContactVerifyTextKey];
+        _autoContactVerifyText = [[NSUserDefaults standardUserDefaults] objectForKey:kTKAutoContactVerifyTextKey];
+        _welcomesText = [[NSUserDefaults standardUserDefaults] objectForKey:kTKWelcomesTextKey];
     }
     return self;
 }
 
 - (void)setAutoContactVerifyText:(NSString *)autoContactVerifyText {
     _autoContactVerifyText = autoContactVerifyText;
-    [[NSUserDefaults standardUserDefaults] setObject:autoContactVerifyText forKey:kAutoContactVerifyTextKey];
+    [[NSUserDefaults standardUserDefaults] setObject:autoContactVerifyText forKey:kTKAutoContactVerifyTextKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)setWelcomesText:(NSString *)welcomesText {
+    _welcomesText = welcomesText;
+    [[NSUserDefaults standardUserDefaults] setObject:welcomesText forKey:kTKWelcomesTextKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

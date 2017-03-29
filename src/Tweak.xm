@@ -17,6 +17,11 @@
     [self addAutoVerifyAction];
 }
 
+- (void)OnSayHelloDataVerifyContactOK:(CPushContact *)contact{
+    %log;
+    %orig;
+}
+
 %new
 - (void)addAutoVerifyAction {
     NSString *verifyText = [[TKRobotConfig sharedConfig] autoContactVerifyText];
@@ -43,8 +48,29 @@
             }
             UITableView *tableView = [self valueForKey:@"m_tableView"];
             [verifyLogic startWithVerifyContactWrap:[NSArray arrayWithObject:wrap] opCode:3 parentView:tableView fromChatRoom:NO];
+
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                NSString *welcomesText = [[TKRobotConfig sharedConfig] welcomesText];
+                [self sendMsg:welcomesText toContact:contact];
+            });
+
         }
     }
+}
+
+%new
+- (void)sendMsg:(NSString *)msg toContact:(CPushContact *)contact {
+    CMessageWrap *wrap = [[%c(CMessageWrap) alloc] initWithMsgType:265395718666059777];
+    id usrName = [%c(SettingUtil) getLocalUsrName:0];
+    [wrap setM_nsFromUsr:usrName];
+    [wrap setM_nsContent:msg];
+    [wrap setM_nsToUsr:contact.m_nsUsrName];
+    MMNewSessionMgr * sessionMgr = [[%c(MMServiceCenter) defaultCenter] getService:%c(MMNewSessionMgr)];
+    [wrap setM_uiCreateTime:[sessionMgr GenSendMsgTime]];
+    [wrap setM_uiStatus:YES];
+
+    CMessageMgr *chatMgr = [[%c(MMServiceCenter) defaultCenter] getService:%c(CMessageMgr)];
+    [chatMgr AddMsg: contact.m_nsUsrName MsgWrap:wrap];
 }
 %end
 

@@ -1,49 +1,106 @@
-%hook SayHelloViewController
-+ (void)OnViewDetail:(id)arg1 prarentViewController:(id)arg2 { %log; %orig; }
-+ (void)makeHelloCell:(id)arg1 helloMsg:(id)arg2 delegate:(id)arg3 { %log; %orig; }
-- (void).cxx_destruct { %log; %orig; }
-- (id)GetClearTip { %log; id r = %orig; HBLogDebug(@" = %@", r); return r; }
-- (void)OnClear:(id)arg1 { %log; %orig; }
-- (void)OnReturn { %log; %orig; }
-- (void)OnSayHelloDataChange { %log; %orig; }
-- (void)OnSayHelloDataSendVerifyMsg:(id)arg1 { %log; %orig; }
-- (void)OnSayHelloDataVerifyContactOK:(id)arg1 { %log; %orig; }
-- (void)actionSheet:(id)arg1 clickedButtonAtIndex:(long long)arg2 { %log; %orig; }
-- (void)addGoogleFriend { %log; %orig; }
-- (void)addMobileFriend { %log; %orig; }
+%hook ContactInfoViewController
+- (unsigned int)GetFromScene { %log; unsigned int r = %orig; NSLog(@" = %u", r); return r; }
+- (void)MessageReturn:(id)arg1 Event:(unsigned int)arg2 { %log; %orig; }
 - (void)alertView:(id)arg1 clickedButtonAtIndex:(long long)arg2 { %log; %orig; }
 - (void)bindPhoneReturn { %log; %orig; }
+- (void)checkNeedForcedUpdateForMemberDetail { %log; %orig; }
+- (void)confirmExpose:(unsigned int)arg1 { %log; %orig; }
+- (void)contactVerifyOk:(id)arg1 { %log; %orig; }
+- (void)copyContactField:(id)arg1 toContact:(id)arg2 { %log; %orig; }
 - (void)dealloc { %log; %orig; }
-- (id)getViewController { %log; id r = %orig; HBLogDebug(@" = %@", r); return r; }
-- (void)initData { %log; %orig; }
-- (void)initTableView { %log; %orig; }
-- (void)initView { %log; %orig; }
-- (void)setM_uiScene:(unsigned int )m_uiScene { %log; %orig; }
-- (unsigned int )m_uiScene { %log; unsigned int  r = %orig; HBLogDebug(@" = %u", r); return r; }
-- (id)makeNearByHeaderView { %log; id r = %orig; HBLogDebug(@" = %@", r); return r; }
-- (id)makeNewFriendHeaderView { %log; id r = %orig; HBLogDebug(@" = %@", r); return r; }
-- (long long)numberOfSectionsInTableView:(id)arg1 { %log; long long r = %orig; HBLogDebug(@" = %lld", r); return r; }
-- (void)onAddContact { %log; %orig; }
-- (void)onClearMyLbsDataFinishedWithResult:(_Bool)arg1 { %log; %orig; }
-- (void)onClearNearHeaderClicked:(id)arg1 { %log; %orig; }
-- (void)onContactsItemViewRightButtonClick:(id)arg1 { %log; %orig; }
-- (void)onMainWindowFrameChanged { %log; %orig; }
-- (_Bool)shouldShowNearByHeaderView { %log; _Bool r = %orig; HBLogDebug(@" = %d", r); return r; }
-- (id)tableView:(id)arg1 cellForRowAtIndexPath:(id)arg2 { %log; id r = %orig; HBLogDebug(@" = %@", r); return r; }
-- (void)tableView:(id)arg1 commitEditingStyle:(long long)arg2 forRowAtIndexPath:(id)arg3 { %log; %orig; }
-- (void)tableView:(id)arg1 didSelectRowAtIndexPath:(id)arg2 { %log; %orig; }
-- (long long)tableView:(id)arg1 editingStyleForRowAtIndexPath:(id)arg2 { %log; long long r = %orig; HBLogDebug(@" = %lld", r); return r; }
-- (double)tableView:(id)arg1 heightForRowAtIndexPath:(id)arg2 { %log; double r = %orig; HBLogDebug(@" = %f", r); return r; }
-- (long long)tableView:(id)arg1 numberOfRowsInSection:(long long)arg2 { %log; long long r = %orig; HBLogDebug(@" = %lld", r); return r; }
-- (void)tableView:(id)arg1 willDisplayCell:(id)arg2 forRowAtIndexPath:(id)arg3 { %log; %orig; }
-- (void)updateHeaderView { %log; %orig; }
-- (void)updateNoHello { %log; %orig; }
-- (void)verifyContactWithOpCode:(id)arg1 opcode:(unsigned int)arg2 { %log; %orig; }
+- (void)delAllMsg { %log; %orig; }
+- (void)doReset { %log; %orig; }
+- (id)getContactVerifyLogic { %log; id r = %orig; NSLog(@" = %@", r); return r; }
+- (id)getCurrentViewController { %log; id r = %orig; NSLog(@" = %@", r); return r; }
+- (id)getSearchId { %log; id r = %orig; NSLog(@" = %@", r); return r; }
+- (id)getUserData { %log; id r = %orig; NSLog(@" = %@", r); return r; }
+- (id)getViewController { %log; id r = %orig; NSLog(@" = %@", r); return r; }
+- (id)init { %log; id r = %orig; NSLog(@" = %@", r); return r; }
+- (void)initSystemPluginData:(int)arg1 { %log; %orig; }
+- (id)initWithTitle:(id)arg1 { %log; id r = %orig; NSLog(@" = %@", r); return r; }
+- (_Bool)isInMyContactList { %log; _Bool r = %orig; NSLog(@" = %d", r); return r; }
+- (_Bool)isQQContact { %log; _Bool r = %orig; NSLog(@" = %d", r); return r; }
+- (void)jumpToContentViewController:(id)arg1 { %log; %orig; }
+- (void)setM_InfoDelegate:( id  )m_InfoDelegate { %log; %orig; }
+- ( id  )m_InfoDelegate { %log;  id   r = %orig; NSLog(@" = 0x%@", r); return r; }
+- (void)setM_bPopToRootWhenDelete:(_Bool )m_bPopToRootWhenDelete { %log; %orig; }
+- (_Bool )m_bPopToRootWhenDelete { %log; _Bool  r = %orig; NSLog(@" = %d", r); return r; }
+- (void)setM_chatContact:(CContact *)m_chatContact { %log; %orig; }
+- (CContact *)m_chatContact { %log; CContact * r = %orig; NSLog(@" = %@", r); return r; }
+- (void)setM_contact:(CContact *)m_contact { %log; %orig; }
+- (CContact *)m_contact { %log; CContact * r = %orig; NSLog(@" = %@", r); return r; }
+- (void)setM_delegate:( id )m_delegate { %log; %orig; }
+- ( id  )m_delegate { %log;  id   r = %orig; NSLog(@" = 0x%@", r); return r; }
+- (void)setM_nsLocation:(NSString *)m_nsLocation { %log; %orig; }
+- (NSString *)m_nsLocation { %log; NSString * r = %orig; NSLog(@" = %@", r); return r; }
+- (void)setM_popToViewControllerClassWhenDelete:(Class )m_popToViewControllerClassWhenDelete { %log; %orig; }
+- (Class )m_popToViewControllerClassWhenDelete { %log; Class  r = %orig; NSLog(@" = %@", r); return r; }
+- (void)setM_qrCodeAddFriendScene:(int )m_qrCodeAddFriendScene { %log; %orig; }
+- (int )m_qrCodeAddFriendScene { %log; int  r = %orig; NSLog(@" = %d", r); return r; }
+- (void)setM_searchScene:(int )m_searchScene { %log; %orig; }
+- (int )m_searchScene { %log; int  r = %orig; NSLog(@" = %d", r); return r; }
+- (void)setM_uiAddFriendStatScene:(int )m_uiAddFriendStatScene { %log; %orig; }
+- (int )m_uiAddFriendStatScene { %log; int  r = %orig; NSLog(@" = %d", r); return r; }
+- (void)setM_uiFromScene:(unsigned int )m_uiFromScene { %log; %orig; }
+- (unsigned int )m_uiFromScene { %log; unsigned int  r = %orig; NSLog(@" = %u", r); return r; }
+- (void)setM_uiVerify:(unsigned int )m_uiVerify { %log; %orig; }
+- (unsigned int )m_uiVerify { %log; unsigned int  r = %orig; NSLog(@" = %u", r); return r; }
+- (void)setM_userData:(id )m_userData { %log; %orig; }
+- (id )m_userData { %log; id  r = %orig; NSLog(@" = %@", r); return r; }
+- (void)onAddToContact { %log; %orig; }
+- (void)onDeleteContact:(id)arg1 { %log; %orig; }
+- (void)onExpose { %log; %orig; }
+- (_Bool)onFilterSendReceiver:(id)arg1 { %log; _Bool r = %orig; NSLog(@" = %d", r); return r; }
+- (void)onFriendRequestSend { %log; %orig; }
+- (void)onModifyContact:(id)arg1 { %log; %orig; }
+- (void)onNewMessage:(id)arg1 { %log; %orig; }
+- (void)onPopViewController:(_Bool)arg1 { %log; %orig; }
+- (void)onProfileChange { %log; %orig; }
+- (void)onRemoveContact { %log; %orig; }
+- (void)onSayHello { %log; %orig; }
+- (void)onSayHelloViewSendSayHello:(id)arg1 { %log; %orig; }
+- (void)onSendVerifyMsg { %log; %orig; }
+- (void)onShareMyFriend { %log; %orig; }
+- (void)onStrangerContactUpdated:(id)arg1 { %log; %orig; }
+- (void)onTalk:(id)arg1 { %log; %orig; }
+- (void)onVerifyOK { %log; %orig; }
+- (void)onVerifyOKWithContact:(id)arg1 { %log; %orig; }
+- (void)onWCGroupAddMemberReturn:(_Bool)arg1 group:(id)arg2 { %log; %orig; }
+- (void)onWCGroupModMemberReturn:(_Bool)arg1 group:(id)arg2 { %log; %orig; }
+- (void)onWCGroupRemoveMemberReturn:(_Bool)arg1 group:(id)arg2 { %log; %orig; }
+- (void)reloadContactAssist { %log; %orig; }
+- (void)reloadData { %log; %orig; }
+- (void)reloadFloatView { %log; %orig; }
+- (void)reloadView { %log; %orig; }
+- (void)setSearchExtraParamsString:(NSString *)searchExtraParamsString { %log; %orig; }
+- (NSString *)searchExtraParamsString { %log; NSString * r = %orig; NSLog(@" = %@", r); return r; }
+- (void)setSearchFromIndex:(unsigned int )searchFromIndex { %log; %orig; }
+- (unsigned int )searchFromIndex { %log; unsigned int  r = %orig; NSLog(@" = %u", r); return r; }
+- (void)setSearchId:(NSString *)searchId { %log; %orig; }
+- (NSString *)searchId { %log; NSString * r = %orig; NSLog(@" = %@", r); return r; }
+- (void)setSearchKeyword:(NSString *)searchKeyword { %log; %orig; }
+- (NSString *)searchKeyword { %log; NSString * r = %orig; NSLog(@" = %@", r); return r; }
+- (void)setSourceMsg:(CMessageWrap *)sourceMsg { %log; %orig; }
+- (CMessageWrap *)sourceMsg { %log; CMessageWrap * r = %orig; NSLog(@" = %@", r); return r; }
+- (void)setVerifyUserInfoList:(NSMutableDictionary *)verifyUserInfoList { %log; %orig; }
+- (NSMutableDictionary *)verifyUserInfoList { %log; NSMutableDictionary * r = %orig; NSLog(@" = %@", r); return r; }
+- (void)startLoadingWithText:(id)arg1 { %log; %orig; }
+- (void)statBanner { %log; %orig; }
+- (void)stopLoadingWithFailText:(id)arg1 { %log; %orig; }
+- (void)stopLoadingWithOKText:(id)arg1 { %log; %orig; }
+- (id)tagForActivePage { %log; id r = %orig; NSLog(@" = %@", r); return r; }
+- (id)tagForCurrentPage { %log; id r = %orig; NSLog(@" = %@", r); return r; }
+- (void)updateContactFromServer { %log; %orig; }
+- (void)viewDidAppear:(_Bool)arg1 { %log; %orig; }
+- (void)viewDidDisappear:(_Bool)arg1 { %log; %orig; }
 - (void)viewDidLayoutSubviews { %log; %orig; }
 - (void)viewDidLoad { %log; %orig; }
-- (void)willAppear { %log; %orig; }
-- (NSString *)debugDescription { %log; NSString * r = %orig; HBLogDebug(@" = %@", r); return r; }
-- (NSString *)description { %log; NSString * r = %orig; HBLogDebug(@" = %@", r); return r; }
-- (unsigned long long )hash { %log; unsigned long long  r = %orig; HBLogDebug(@" = %llu", r); return r; }
-- (Class )superclass { %log; Class  r = %orig; HBLogDebug(@" = %@", r); return r; }
+- (void)viewWillAppear:(_Bool)arg1 { %log; %orig; }
+- (void)viewWillBePoped:(_Bool)arg1 { %log; %orig; }
+- (void)viewWillDisappear:(_Bool)arg1 { %log; %orig; }
+- (void)viewWillLayoutSubviews { %log; %orig; }
+- (NSString *)debugDescription { %log; NSString * r = %orig; NSLog(@" = %@", r); return r; }
+- (NSString *)description { %log; NSString * r = %orig; NSLog(@" = %@", r); return r; }
+- (unsigned long long )hash { %log; unsigned long long  r = %orig; NSLog(@" = %llu", r); return r; }
+- (Class )superclass { %log; Class  r = %orig; NSLog(@" = %@", r); return r; }
 %end

@@ -13,5 +13,6 @@
 + (instancetype)sharedConfig;
 
 @property (nonatomic, copy) NSString *autoContactVerifyText;
+@property (nonatomic, copy) NSString *welcomesText;
 
 @end

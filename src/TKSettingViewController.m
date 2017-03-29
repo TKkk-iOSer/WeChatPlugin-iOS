@@ -48,33 +48,70 @@
     [tableView reloadData];
 }
 
+#pragma mark - 设置 TableView
+
 - (void)addsettingSection {
     MMTableViewSectionInfo *sectionInfo = [objc_getClass("MMTableViewSectionInfo") sectionInfoDefaut];
 
     [sectionInfo addCell:[self createAutoVerifyCell]];
+    [sectionInfo addCell:[self createWelcomesCell]];
     [self.tableViewInfo addSection:sectionInfo];
 }
 
 - (MMTableViewCellInfo *)createAutoVerifyCell {
     MMTableViewCellInfo *cellInfo;
     NSString *verifyText = [[TKRobotConfig sharedConfig] autoContactVerifyText];
-    cellInfo =  [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingVerify) target:self title:@"关键词" rightValue:verifyText accessoryType:1];
+    cellInfo =  [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingVerify) target:self title:@"自动加好友关键词" rightValue:verifyText accessoryType:1];
 
     return cellInfo;
 }
 
+- (MMTableViewCellInfo *)createWelcomesCell {
+    MMTableViewCellInfo *cellInfo;
+    NSString *welcomes = [[TKRobotConfig sharedConfig] welcomesText];
+    cellInfo =  [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingWelcome) target:self title:@"添加好友欢迎语" rightValue:welcomes accessoryType:1];
+
+    return cellInfo;
+}
+
+#pragma mark - 设置cell相应的方法
+
 - (void)settingVerify {
+
+    NSString *verifyText = [[TKRobotConfig sharedConfig] autoContactVerifyText];
+    [self alertControllerWithTitle:@"自动添加好友设置"
+                           message:verifyText
+                       placeholder:@"请输入自动添加验证码"
+                               blk:^(UITextField *textField) {
+        [[TKRobotConfig sharedConfig] setAutoContactVerifyText:textField.text];
+        [self reloadTableData];
+    }];
+}
+
+- (void)settingWelcome {
+    NSString *welcomes = [[TKRobotConfig sharedConfig] welcomesText];
+    [self alertControllerWithTitle:@"欢迎语设置"
+                           message:welcomes
+                       placeholder:@"请输入欢迎语"
+                               blk:^(UITextField *textField) {
+        [[TKRobotConfig sharedConfig] setWelcomesText:textField.text];
+        [self reloadTableData];
+    }];
+}
+
+- (void)alertControllerWithTitle:(NSString *)title message:(NSString *)message placeholder:(NSString *)placeholder blk:(void (^)(UITextField *))blk {
     UIAlertController *alertController = ({
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"自动添加好友设置" message:nil preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:nil preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
         [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-            UITextField *textField = alert.textFields.firstObject;
-            [[TKRobotConfig sharedConfig] setAutoContactVerifyText:textField.text];
-            [self reloadTableData];
+            if (blk) {
+                blk(alert.textFields.firstObject);
+            }
         }]];
 
         [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-            textField.placeholder = @"请输入自动添加验证码";
+            textField.placeholder = placeholder;
+            textField.text = message;
         }];
 
         alert;
@@ -82,6 +119,5 @@
 
     [self presentViewController:alertController animated:YES completion:nil];
 }
-
 
 @end
