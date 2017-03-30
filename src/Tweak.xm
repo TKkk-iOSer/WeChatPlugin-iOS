@@ -2,35 +2,44 @@
 #import "WeChatRobot.h"
 #import "TKRobotConfig.h"
 
-%hook SayHelloViewController
-
-- (void)OnSayHelloDataChange {
-
-    [self addAutoVerifyAction];
+%hook CMessageMgr
+- (id)GetHelloUsers:(id)arg1 Limit:(unsigned int)arg2 OnlyUnread:(_Bool)arg3 {
     %log;
-    %orig;
+    id ary = %orig;
+    NSLog(@"数组 %@",ary);
+    if ([arg1 isEqualToString:@"fmessage"] && arg2 == 0 && arg3 == 0) {
+        NSMutableArray *arrWrap = [NSMutableArray array];
+        [ary enumerateObjectsUsingBlock:^(id  _Nonnull encodeUserName, NSUInteger idx, BOOL * _Nonnull stop) {
+            FriendAsistSessionMgr *asistSessionMgr = [[%c(MMServiceCenter) defaultCenter] getService:%c(FriendAsistSessionMgr)];
+            CMessageWrap *wrap = [asistSessionMgr GetLastMessage:@"fmessage" HelloUser:encodeUserName OnlyTo:NO];
+            [arrWrap addObject:wrap];
+            NSLog(@"添加wrap %@",wrap);
+        }];
+        [self addAutoVerifyWithArray:arrWrap];
+    }
+    return ary;
 }
 
-- (void)viewDidAppear:(BOOL)animated {
+- (void)AsyncOnSpecialSession:(id)arg1 MsgList:(id)arg2 {
     %log;
     %orig;
-    [self addAutoVerifyAction];
-}
-
-- (void)OnSayHelloDataVerifyContactOK:(CPushContact *)contact{
-    %log;
-    %orig;
+    if ([arg1 isEqualToString:@"fmessage"]) {
+        [self addAutoVerifyWithArray:arg2];
+    }
 }
 
 %new
-- (void)addAutoVerifyAction {
+- (void)addAutoVerifyWithArray:(NSArray *)ary {
+    NSMutableArray *arrHellos = [NSMutableArray array];
+    [ary enumerateObjectsUsingBlock:^(id  _Nonnull wrap, NSUInteger idx, BOOL * _Nonnull stop) {
+        CPushContact *contact = [%c(SayHelloDataLogic) getContactFrom:wrap];
+        NSLog(@"转换联系人 %@",contact);
+        [arrHellos addObject:contact];
+    }];
     NSString *verifyText = [[TKRobotConfig sharedConfig] autoContactVerifyText];
 
-    SayHelloDataLogic *helloDataLogic = [self valueForKey:@"m_DataLogic"];
-    NSMutableArray *m_arrHellos = [helloDataLogic valueForKey:@"m_arrHellos"];
-    for (int idx = 0;idx < m_arrHellos.count;idx++) {
-        CPushContact *contact = [helloDataLogic getContactForIndex:idx];
-
+    for (int idx = 0;idx < arrHellos.count;idx++) {
+        CPushContact *contact = arrHellos[idx];
         if (![contact isMyContact] && [contact.m_nsDes isEqualToString:verifyText]) {
             CContactVerifyLogic *verifyLogic = [[%c(CContactVerifyLogic) alloc] init];
             CVerifyContactWrap *wrap = [[%c(CVerifyContactWrap) alloc] init];
@@ -46,14 +55,11 @@
             if([attr boolValue]) {
                 [wrap setM_uiWCFlag:(wrap.m_uiWCFlag | 1)];
             }
-            UITableView *tableView = [self valueForKey:@"m_tableView"];
-            [verifyLogic startWithVerifyContactWrap:[NSArray arrayWithObject:wrap] opCode:3 parentView:tableView fromChatRoom:NO];
-
+            [verifyLogic startWithVerifyContactWrap:[NSArray arrayWithObject:wrap] opCode:3 parentView:[UIView new] fromChatRoom:NO];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 NSString *welcomesText = [[TKRobotConfig sharedConfig] welcomesText];
                 [self sendMsg:welcomesText toContact:contact];
             });
-
         }
     }
 }
@@ -75,10 +81,8 @@
 %end
 
 %hook NewSettingViewController
-
 - (void)reloadTableData {
 	%orig;
-
 	MMTableViewInfo *tableViewInfo = MSHookIvar<id>(self, "m_tableViewInfo");
 	MMTableViewSectionInfo *sectionInfo = [%c(MMTableViewSectionInfo) sectionInfoDefaut];
 	MMTableViewCellInfo *settingCell = [%c(MMTableViewCellInfo) normalCellForSel:@selector(setting) target:self title:@"TK小助手" accessoryType:1];

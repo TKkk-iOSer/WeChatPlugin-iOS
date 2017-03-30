@@ -85,6 +85,8 @@
                                blk:^(UITextField *textField) {
         [[TKRobotConfig sharedConfig] setAutoContactVerifyText:textField.text];
         [self reloadTableData];
+        CMessageMgr *mgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CMessageMgr")];
+        [mgr GetHelloUsers:@"fmessage" Limit:0 OnlyUnread:0];
     }];
 }
 
