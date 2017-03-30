@@ -6,6 +6,11 @@
 //  Copyright © 2017年 TK. All rights reserved.
 //
 
+typedef NS_ENUM(NSUInteger, TKArrayTpye) {
+    TKArrayTpyeMsgWrap,
+    TKArrayTpyeMsgUserName
+};
+
 @class CPushContact, SayHelloDataLogic;
 
 #pragma mark - Manager
@@ -19,8 +24,9 @@
 - (void)AsyncOnSpecialSession:(id)arg1 MsgList:(id)arg2;
 - (id)GetHelloUsers:(id)arg1 Limit:(unsigned int)arg2 OnlyUnread:(_Bool)arg3;
 // new
-- (void)addAutoVerifyWithArray:(id)arg1;
-- (void)sendMsg:(NSString *)msg toContact:(CPushContact *)contact;
+
+- (void)addAutoVerifyWithArray:(NSArray *)ary arrayType:(TKArrayTpye)type;
+- (void)sendMsg:(NSString *)msg toContactUsrName:(NSString *)userName;
 @end
 
 @interface FriendAsistSessionMgr : NSObject
@@ -29,6 +35,10 @@
 
 @interface AutoSetRemarkMgr : NSObject
 - (id)GetStrangerAttribute:(id)arg1 AttributeName:(int)arg2;
+@end
+
+@interface CContactMgr : NSObject
+- (id)getContactByName:(id)arg1;
 @end
 
 @interface MMServiceCenter : NSObject
@@ -44,6 +54,7 @@
 @property(retain, nonatomic) NSString *m_nsContent; // @synthesize m_nsContent;
 @property(retain, nonatomic) NSString *m_nsToUsr; // @synthesize m_nsDisplayName;
 @property(retain, nonatomic) NSString *m_nsFromUsr; // @synthesize m_nsFromUsr;
+@property(retain, nonatomic) NSString *m_nsLastDisplayContent;
 @property(nonatomic) unsigned int m_uiCreateTime; // @synthesize m_uiCreateTime;
 @property(nonatomic) unsigned int m_uiStatus; // @synthesize m_uiStatus;
 @end
@@ -54,6 +65,7 @@
 @end
 
 @interface CContact : CBaseContact
+@property(retain, nonatomic) NSString *m_nsNickName;
 @end
 
 @interface CPushContact : CContact

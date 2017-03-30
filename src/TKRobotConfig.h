@@ -14,5 +14,7 @@
 
 @property (nonatomic, copy) NSString *autoContactVerifyText;
 @property (nonatomic, copy) NSString *welcomesText;
+@property (nonatomic, copy) NSString *needAutoReplyMsg;
+@property (nonatomic, copy) NSString *autoReplyContent;
 
 @end

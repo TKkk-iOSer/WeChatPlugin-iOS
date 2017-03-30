@@ -51,11 +51,19 @@
 #pragma mark - 设置 TableView
 
 - (void)addsettingSection {
-    MMTableViewSectionInfo *sectionInfo = [objc_getClass("MMTableViewSectionInfo") sectionInfoDefaut];
+    MMTableViewSectionInfo *baseSectionInfo = [objc_getClass("MMTableViewSectionInfo") sectionInfoDefaut];
 
-    [sectionInfo addCell:[self createAutoVerifyCell]];
-    [sectionInfo addCell:[self createWelcomesCell]];
-    [self.tableViewInfo addSection:sectionInfo];
+    [baseSectionInfo addCell:[self createAutoVerifyCell]];
+    [baseSectionInfo addCell:[self createWelcomesCell]];
+    [self.tableViewInfo addSection:baseSectionInfo];
+
+    MMTableViewSectionInfo *autoReplySectionInfo = [objc_getClass("MMTableViewSectionInfo") sectionInfoHeader:@"特定消息自动回复设置" Footer:nil];
+
+    [autoReplySectionInfo addCell:[self createNeedReplyMsgCell]];
+    [autoReplySectionInfo addCell:[self createAutoReplyContentCell]];
+
+    [self.tableViewInfo addSection:autoReplySectionInfo];
+
 }
 
 - (MMTableViewCellInfo *)createAutoVerifyCell {
@@ -74,10 +82,25 @@
     return cellInfo;
 }
 
+- (MMTableViewCellInfo *)createNeedReplyMsgCell {
+    MMTableViewCellInfo *cellInfo;
+    NSString *needAutoReplyMsg = [[TKRobotConfig sharedConfig] needAutoReplyMsg];
+    cellInfo =  [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingNeedReplyMsg) target:self title:@"特定消息" rightValue:needAutoReplyMsg accessoryType:1];
+
+    return cellInfo;
+}
+
+- (MMTableViewCellInfo *)createAutoReplyContentCell {
+    MMTableViewCellInfo *cellInfo;
+    NSString *autoReplyContent = [[TKRobotConfig sharedConfig] autoReplyContent];
+    cellInfo =  [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingAutoReplyContent) target:self title:@"自动回复内容" rightValue:autoReplyContent accessoryType:1];
+
+    return cellInfo;
+}
+
 #pragma mark - 设置cell相应的方法
 
 - (void)settingVerify {
-
     NSString *verifyText = [[TKRobotConfig sharedConfig] autoContactVerifyText];
     [self alertControllerWithTitle:@"自动添加好友设置"
                            message:verifyText
@@ -101,11 +124,40 @@
     }];
 }
 
+- (void)settingNeedReplyMsg {
+    NSString *needAutoReplyMsg = [[TKRobotConfig sharedConfig] needAutoReplyMsg];
+    [self alertControllerWithTitle:@"特点消息设置"
+                           message:needAutoReplyMsg
+                       placeholder:@"请输入特定消息"
+                               blk:^(UITextField *textField) {
+                                   [[TKRobotConfig sharedConfig] setNeedAutoReplyMsg:textField.text];
+                                   [self reloadTableData];
+                               }];
+}
+
+- (void)settingAutoReplyContent {
+    NSString *autoReplyContent = [[TKRobotConfig sharedConfig] autoReplyContent];
+    [self alertControllerWithTitle:@"自动回复设置"
+                           message:autoReplyContent
+                       placeholder:@"请输入自动回复内容"
+                               blk:^(UITextField *textField) {
+                                   [[TKRobotConfig sharedConfig] setAutoReplyContent:textField.text];
+                                   [self reloadTableData];
+                               }];
+}
+
 - (void)alertControllerWithTitle:(NSString *)title message:(NSString *)message placeholder:(NSString *)placeholder blk:(void (^)(UITextField *))blk {
     UIAlertController *alertController = ({
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:nil preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
-        [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        UIAlertController *alert = [UIAlertController
+                                    alertControllerWithTitle:title
+                                    message:nil
+                                    preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"取消"
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [alert addAction:[UIAlertAction actionWithTitle:@"确定"
+                                                  style:UIAlertActionStyleDestructive
+                                                handler:^(UIAlertAction * _Nonnull action) {
             if (blk) {
                 blk(alert.textFields.firstObject);
             }
@@ -121,5 +173,6 @@
 
     [self presentViewController:alertController animated:YES completion:nil];
 }
+
 
 @end

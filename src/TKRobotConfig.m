@@ -10,6 +10,8 @@
 
 static NSString * const kTKAutoContactVerifyTextKey = @"kTKAutoContactVerifyTextKey";
 static NSString * const kTKWelcomesTextKey = @"kTKWelcomesTextKey";
+static NSString * const kTKNeedAutoReplyMsgKey = @"kTKNeedAutoReplyMsgKey";
+static NSString * const kTKAutoReplyContentKey = @"kTKAutoReplyContentKey";
 
 @implementation TKRobotConfig
 
@@ -29,6 +31,9 @@ static NSString * const kTKWelcomesTextKey = @"kTKWelcomesTextKey";
     if (self) {
         _autoContactVerifyText = [[NSUserDefaults standardUserDefaults] objectForKey:kTKAutoContactVerifyTextKey];
         _welcomesText = [[NSUserDefaults standardUserDefaults] objectForKey:kTKWelcomesTextKey];
+        _needAutoReplyMsg = [[NSUserDefaults standardUserDefaults] objectForKey:kTKNeedAutoReplyMsgKey];
+        _autoReplyContent = [[NSUserDefaults standardUserDefaults] objectForKey:kTKAutoReplyContentKey];
+
     }
     return self;
 }
@@ -45,4 +50,15 @@ static NSString * const kTKWelcomesTextKey = @"kTKWelcomesTextKey";
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (void)setNeedAutoReplyMsg:(NSString *)needAutoReplyMsg {
+    _needAutoReplyMsg = needAutoReplyMsg;
+    [[NSUserDefaults standardUserDefaults] setObject:needAutoReplyMsg forKey:kTKNeedAutoReplyMsgKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)setAutoReplyContent:(NSString *)autoReplyContent {
+    _autoReplyContent = autoReplyContent;
+    [[NSUserDefaults standardUserDefaults] setObject:autoReplyContent forKey:kTKAutoReplyContentKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
 @end

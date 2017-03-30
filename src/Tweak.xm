@@ -3,39 +3,50 @@
 #import "TKRobotConfig.h"
 
 %hook CMessageMgr
+
+- (void)MessageReturn:(unsigned int)arg1 MessageInfo:(NSDictionary *)info Event:(unsigned int)arg3 {
+    %log; %orig;
+    if (arg1 == 227) {  // 收到消息
+        CMessageWrap *wrap = [info objectForKey:@"18"];
+        NSString *needAutoReplyMsg = [[TKRobotConfig sharedConfig] needAutoReplyMsg];
+        NSString * display = MSHookIvar<id>(wrap, "m_nsLastDisplayContent");
+        if([display isEqualToString:needAutoReplyMsg]) {
+            NSString *autoReplyContent = [[TKRobotConfig sharedConfig] autoReplyContent];
+            [self sendMsg:autoReplyContent toContactUsrName:wrap.m_nsFromUsr];
+        }
+    } else if (arg1 == 332) {   // 收到添加好友消息
+        NSString *keyStr = [info objectForKey:@"5"];
+        if ([keyStr isEqualToString:@"fmessage"]) {
+            NSArray *wrapArray = [info objectForKey:@"27"];
+            [self addAutoVerifyWithArray:wrapArray arrayType:TKArrayTpyeMsgWrap];
+        }
+    }
+}
+
 - (id)GetHelloUsers:(id)arg1 Limit:(unsigned int)arg2 OnlyUnread:(_Bool)arg3 {
     %log;
-    id ary = %orig;
-    NSLog(@"数组 %@",ary);
+    id EUserName = %orig;
     if ([arg1 isEqualToString:@"fmessage"] && arg2 == 0 && arg3 == 0) {
-        NSMutableArray *arrWrap = [NSMutableArray array];
-        [ary enumerateObjectsUsingBlock:^(id  _Nonnull encodeUserName, NSUInteger idx, BOOL * _Nonnull stop) {
-            FriendAsistSessionMgr *asistSessionMgr = [[%c(MMServiceCenter) defaultCenter] getService:%c(FriendAsistSessionMgr)];
-            CMessageWrap *wrap = [asistSessionMgr GetLastMessage:@"fmessage" HelloUser:encodeUserName OnlyTo:NO];
-            [arrWrap addObject:wrap];
-            NSLog(@"添加wrap %@",wrap);
-        }];
-        [self addAutoVerifyWithArray:arrWrap];
+        [self addAutoVerifyWithArray:ary arrayType:TKArrayTpyeMsgUserName];
     }
     return ary;
 }
 
-- (void)AsyncOnSpecialSession:(id)arg1 MsgList:(id)arg2 {
-    %log;
-    %orig;
-    if ([arg1 isEqualToString:@"fmessage"]) {
-        [self addAutoVerifyWithArray:arg2];
-    }
-}
-
 %new
-- (void)addAutoVerifyWithArray:(NSArray *)ary {
+- (void)addAutoVerifyWithArray:(NSArray *)ary arrayType:(TKArrayTpye)type {
     NSMutableArray *arrHellos = [NSMutableArray array];
-    [ary enumerateObjectsUsingBlock:^(id  _Nonnull wrap, NSUInteger idx, BOOL * _Nonnull stop) {
-        CPushContact *contact = [%c(SayHelloDataLogic) getContactFrom:wrap];
-        NSLog(@"转换联系人 %@",contact);
-        [arrHellos addObject:contact];
+    [ary enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (type == TKArrayTpyeMsgWrap) {
+            CPushContact *contact = [%c(SayHelloDataLogic) getContactFrom:obj];
+            [arrHellos addObject:contact];
+        } else if (type == TKArrayTpyeMsgUserName) {
+            FriendAsistSessionMgr *asistSessionMgr = [[%c(MMServiceCenter) defaultCenter] getService:%c(FriendAsistSessionMgr)];
+            CMessageWrap *wrap = [asistSessionMgr GetLastMessage:@"fmessage" HelloUser:obj OnlyTo:NO];
+            CPushContact *contact = [%c(SayHelloDataLogic) getContactFrom:wrap];
+            [arrHellos addObject:contact];
+        }
     }];
+
     NSString *verifyText = [[TKRobotConfig sharedConfig] autoContactVerifyText];
 
     for (int idx = 0;idx < arrHellos.count;idx++) {
@@ -58,25 +69,25 @@
             [verifyLogic startWithVerifyContactWrap:[NSArray arrayWithObject:wrap] opCode:3 parentView:[UIView new] fromChatRoom:NO];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 NSString *welcomesText = [[TKRobotConfig sharedConfig] welcomesText];
-                [self sendMsg:welcomesText toContact:contact];
+                [self sendMsg:welcomesText toContactUsrName:contact.m_nsUsrName];
             });
         }
     }
 }
 
 %new
-- (void)sendMsg:(NSString *)msg toContact:(CPushContact *)contact {
+- (void)sendMsg:(NSString *)msg toContactUsrName:(NSString *)userName {
     CMessageWrap *wrap = [[%c(CMessageWrap) alloc] initWithMsgType:265395718666059777];
     id usrName = [%c(SettingUtil) getLocalUsrName:0];
     [wrap setM_nsFromUsr:usrName];
     [wrap setM_nsContent:msg];
-    [wrap setM_nsToUsr:contact.m_nsUsrName];
+    [wrap setM_nsToUsr:userName];
     MMNewSessionMgr * sessionMgr = [[%c(MMServiceCenter) defaultCenter] getService:%c(MMNewSessionMgr)];
     [wrap setM_uiCreateTime:[sessionMgr GenSendMsgTime]];
     [wrap setM_uiStatus:YES];
 
     CMessageMgr *chatMgr = [[%c(MMServiceCenter) defaultCenter] getService:%c(CMessageMgr)];
-    [chatMgr AddMsg: contact.m_nsUsrName MsgWrap:wrap];
+    [chatMgr AddMsg:userName MsgWrap:wrap];
 }
 %end
 
