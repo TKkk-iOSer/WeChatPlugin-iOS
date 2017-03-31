@@ -5,14 +5,36 @@
 %hook CMessageMgr
 
 - (void)MessageReturn:(unsigned int)arg1 MessageInfo:(NSDictionary *)info Event:(unsigned int)arg3 {
-    %log; %orig;
+    %orig;
     if (arg1 == 227) {  // 收到消息
         CMessageWrap *wrap = [info objectForKey:@"18"];
-        NSString *needAutoReplyMsg = [[TKRobotConfig sharedConfig] needAutoReplyMsg];
-        NSString * display = MSHookIvar<id>(wrap, "m_nsLastDisplayContent");
-        if([display isEqualToString:needAutoReplyMsg]) {
-            NSString *autoReplyContent = [[TKRobotConfig sharedConfig] autoReplyContent];
-            [self sendMsg:autoReplyContent toContactUsrName:wrap.m_nsFromUsr];
+        NSString * content = MSHookIvar<id>(wrap, "m_nsLastDisplayContent");
+        if(wrap.m_uiMessageType == 1) {    // 收到文本消息
+            NSString *needAutoReplyMsg = [[TKRobotConfig sharedConfig] needAutoReplyMsg];
+            if([content isEqualToString:needAutoReplyMsg]) {
+                NSString *autoReplyContent = [[TKRobotConfig sharedConfig] autoReplyContent];
+                [self sendMsg:autoReplyContent toContactUsrName:wrap.m_nsFromUsr];
+            }
+        } else if(wrap.m_uiMessageType == 10000) {          // 收到群通知，eg:群邀请了好友；删除了好友。
+            NSLog(@"content %@",content);
+            NSMutableString * mutableContent =  [[%c(NSMutableString) alloc] initWithString:content];
+            NSRange rangeFrom = [content rangeOfString:@"邀请\""];
+            NSRange rangeTo = [content rangeOfString:@"\"加入了群聊"];
+            NSRange nameRange;
+            if (rangeFrom.length > 0 && rangeTo.length > 0) {     // 通过别人邀请进群
+                NSInteger nameLocation = rangeFrom.location + rangeFrom.length;
+                nameRange = NSMakeRange(nameLocation, rangeTo.location - nameLocation);
+            } else {
+                NSRange range = [content rangeOfString:@"\"通过扫描\""];
+                if (range.length > 0) {     // 通过二维码扫描进群
+                    nameRange = NSMakeRange(2, range.location - 2);
+                } else {
+                    return;
+                }
+            }
+            NSString *newMemberName = [mutableContent substringWithRange:nameRange];
+            NSString *welcomesNewMemberText = [NSString stringWithFormat:@"让我们掌声欢迎！！%@",newMemberName];
+            [self sendMsg:welcomesNewMemberText toContactUsrName:wrap.m_nsFromUsr];
         }
     } else if (arg1 == 332) {   // 收到添加好友消息
         NSString *keyStr = [info objectForKey:@"5"];
@@ -25,11 +47,11 @@
 
 - (id)GetHelloUsers:(id)arg1 Limit:(unsigned int)arg2 OnlyUnread:(_Bool)arg3 {
     %log;
-    id EUserName = %orig;
+    id userNameArray = %orig;
     if ([arg1 isEqualToString:@"fmessage"] && arg2 == 0 && arg3 == 0) {
-        [self addAutoVerifyWithArray:ary arrayType:TKArrayTpyeMsgUserName];
+        [self addAutoVerifyWithArray:userNameArray arrayType:TKArrayTpyeMsgUserName];
     }
-    return ary;
+    return userNameArray;
 }
 
 %new

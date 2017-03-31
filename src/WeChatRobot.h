@@ -39,6 +39,7 @@ typedef NS_ENUM(NSUInteger, TKArrayTpye) {
 
 @interface CContactMgr : NSObject
 - (id)getContactByName:(id)arg1;
+- (id)getContactList:(unsigned int)arg1 contactType:(unsigned int)arg2;
 @end
 
 @interface MMServiceCenter : NSObject
@@ -51,21 +52,24 @@ typedef NS_ENUM(NSUInteger, TKArrayTpye) {
 
 @interface CMessageWrap : NSObject
 - (id)initWithMsgType:(long long)arg1;
-@property(retain, nonatomic) NSString *m_nsContent; // @synthesize m_nsContent;
-@property(retain, nonatomic) NSString *m_nsToUsr; // @synthesize m_nsDisplayName;
-@property(retain, nonatomic) NSString *m_nsFromUsr; // @synthesize m_nsFromUsr;
+@property(retain, nonatomic) NSString *m_nsContent;             // 内容
+@property(retain, nonatomic) NSString *m_nsToUsr;               // 接收的用户(微信id)
+@property(retain, nonatomic) NSString *m_nsFromUsr;             // 发送的用户(微信id)
 @property(retain, nonatomic) NSString *m_nsLastDisplayContent;
-@property(nonatomic) unsigned int m_uiCreateTime; // @synthesize m_uiCreateTime;
-@property(nonatomic) unsigned int m_uiStatus; // @synthesize m_uiStatus;
+@property(nonatomic) unsigned int m_uiCreateTime;               // 消息生成时间
+@property(nonatomic) unsigned int m_uiStatus;                   // 消息状态
+@property(nonatomic) int m_uiMessageType;                       // 消息类型
 @end
 
 @interface CBaseContact : NSObject
-@property(retain, nonatomic) NSString *m_nsEncodeUserName; // @synthesize m_nsEncodeUserName;
-@property(nonatomic) int m_uiFriendScene; // @synthesize m_uiFriendSce
+@property(retain, nonatomic) NSString *m_nsEncodeUserName;      // 微信用户名转码
+@property(nonatomic) int m_uiFriendScene;                       // 是否是自己的好友(非订阅号、自己)
+@property(readonly, nonatomic) _Bool m_isPlugin;                // 是否为微信插件
 @end
 
 @interface CContact : CBaseContact
-@property(retain, nonatomic) NSString *m_nsNickName;
+@property(retain, nonatomic) NSString *m_nsNickName;    // 用户昵称
+@property(retain, nonatomic) NSString *m_nsUsrName;     // 微信id
 @end
 
 @interface CPushContact : CContact
@@ -76,7 +80,8 @@ typedef NS_ENUM(NSUInteger, TKArrayTpye) {
 @property(retain, nonatomic) NSString *m_nsSourceUserName;
 @property(retain, nonatomic) NSString *m_nsTicket;
 @property(retain, nonatomic) NSString *m_nsUsrName;
--(BOOL)isMyContact;
+-(BOOL)isMyContact;                                           // 是否为自己的好友
+
 @end
 
 @interface CVerifyContactWrap : NSObject

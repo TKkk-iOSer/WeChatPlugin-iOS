@@ -61,7 +61,7 @@
 
     [autoReplySectionInfo addCell:[self createNeedReplyMsgCell]];
     [autoReplySectionInfo addCell:[self createAutoReplyContentCell]];
-
+    [autoReplySectionInfo addCell:[self createGroupSendCell]];
     [self.tableViewInfo addSection:autoReplySectionInfo];
 
 }
@@ -94,6 +94,14 @@
     MMTableViewCellInfo *cellInfo;
     NSString *autoReplyContent = [[TKRobotConfig sharedConfig] autoReplyContent];
     cellInfo =  [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingAutoReplyContent) target:self title:@"自动回复内容" rightValue:autoReplyContent accessoryType:1];
+
+    return cellInfo;
+}
+
+- (MMTableViewCellInfo *)createGroupSendCell {
+    MMTableViewCellInfo *cellInfo;
+    NSString *autoReplyContent = [[TKRobotConfig sharedConfig] autoReplyContent];
+    cellInfo =  [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingGroupSend) target:self title:@"群发设置" rightValue:autoReplyContent accessoryType:1];
 
     return cellInfo;
 }
@@ -146,6 +154,25 @@
                                }];
 }
 
+- (void)settingGroupSend {
+    NSString *autoReplyContent = [[TKRobotConfig sharedConfig] autoReplyContent];
+    [self alertControllerWithTitle:@"群发内容"
+                           message:autoReplyContent
+                       placeholder:@"请输入自动回复内容"
+                               blk:^(UITextField *textField) {
+                                   [[TKRobotConfig sharedConfig] setAutoReplyContent:textField.text];
+                                   [self reloadTableData];
+                                   CContactMgr *contactMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CContactMgr")];
+                                   CMessageMgr *messageMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CMessageMgr")];
+                                   NSArray *contactArray = [contactMgr getContactList:1 contactType:0];
+                                   [contactArray enumerateObjectsUsingBlock:^(CContact *contact, NSUInteger idx, BOOL * _Nonnull stop) {
+                                       if(contact.m_uiFriendScene && ![contact m_isPlugin]) {
+                                           [messageMgr sendMsg:textField.text toContactUsrName:contact.m_nsUsrName];
+                                       }
+                                   }];
+                               }];
+}
+
 - (void)alertControllerWithTitle:(NSString *)title message:(NSString *)message placeholder:(NSString *)placeholder blk:(void (^)(UITextField *))blk {
     UIAlertController *alertController = ({
         UIAlertController *alert = [UIAlertController
@@ -173,6 +200,5 @@
 
     [self presentViewController:alertController animated:YES completion:nil];
 }
-
 
 @end
