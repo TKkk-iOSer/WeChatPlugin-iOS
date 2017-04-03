@@ -7,17 +7,28 @@
 - (void)MessageReturn:(unsigned int)arg1 MessageInfo:(NSDictionary *)info Event:(unsigned int)arg3 {
     %orig;
     if (arg1 == 227) {  // 收到消息
+
         CMessageWrap *wrap = [info objectForKey:@"18"];
         NSString * content = MSHookIvar<id>(wrap, "m_nsLastDisplayContent");
         if(wrap.m_uiMessageType == 1) {    // 收到文本消息
-            NSString *needAutoReplyMsg = [[TKRobotConfig sharedConfig] needAutoReplyMsg];
+            BOOL autoReplyEnable = [[TKRobotConfig sharedConfig] autoReplyEnable];
+            NSLog(@"autoReplyEnable = %d",autoReplyEnable);
+            if (!autoReplyEnable)       // 是否开启自动回复
+                return;
+
+            NSString *needAutoReplyMsg = [[TKRobotConfig sharedConfig] autoReplyKeyword];
             if([content isEqualToString:needAutoReplyMsg]) {
-                NSString *autoReplyContent = [[TKRobotConfig sharedConfig] autoReplyContent];
+                NSString *autoReplyContent = [[TKRobotConfig sharedConfig] autoReplyText];
                 [self sendMsg:autoReplyContent toContactUsrName:wrap.m_nsFromUsr];
             }
         } else if(wrap.m_uiMessageType == 10000) {          // 收到群通知，eg:群邀请了好友；删除了好友。
             NSLog(@"content %@",content);
-            NSMutableString * mutableContent =  [[%c(NSMutableString) alloc] initWithString:content];
+            BOOL welcomeJoinChatroomEnable = [[TKRobotConfig sharedConfig] welcomeJoinChatroomEnable];
+            NSLog(@"welcomeJoinChatroomEnable = %d",welcomeJoinChatroomEnable);
+            if (!welcomeJoinChatroomEnable)     // 是否开启入群欢迎语
+                return;
+
+            // NSMutableString * mutableContent =  [[%c(NSMutableString) alloc] initWithString:content];
             NSRange rangeFrom = [content rangeOfString:@"邀请\""];
             NSRange rangeTo = [content rangeOfString:@"\"加入了群聊"];
             NSRange nameRange;
@@ -32,11 +43,16 @@
                     return;
                 }
             }
-            NSString *newMemberName = [mutableContent substringWithRange:nameRange];
-            NSString *welcomesNewMemberText = [NSString stringWithFormat:@"让我们掌声欢迎！！%@",newMemberName];
-            [self sendMsg:welcomesNewMemberText toContactUsrName:wrap.m_nsFromUsr];
+            // NSString *newMemberName = [mutableContent substringWithRange:nameRange];
+            NSString *welcomeJoinChatroomText = [[TKRobotConfig sharedConfig] welcomeJoinChatroomText];
+            [self sendMsg:welcomeJoinChatroomText toContactUsrName:wrap.m_nsFromUsr];
         }
     } else if (arg1 == 332) {   // 收到添加好友消息
+        BOOL autoVerifyEnable = [[TKRobotConfig sharedConfig] autoVerifyEnable];
+        NSLog(@"autoVerifyEnable = %d",autoVerifyEnable);
+        if (!autoVerifyEnable)
+            return;
+
         NSString *keyStr = [info objectForKey:@"5"];
         if ([keyStr isEqualToString:@"fmessage"]) {
             NSArray *wrapArray = [info objectForKey:@"27"];
@@ -51,6 +67,7 @@
     if ([arg1 isEqualToString:@"fmessage"] && arg2 == 0 && arg3 == 0) {
         [self addAutoVerifyWithArray:userNameArray arrayType:TKArrayTpyeMsgUserName];
     }
+
     return userNameArray;
 }
 
@@ -69,11 +86,11 @@
         }
     }];
 
-    NSString *verifyText = [[TKRobotConfig sharedConfig] autoContactVerifyText];
+    NSString *autoVerifyKeyword = [[TKRobotConfig sharedConfig] autoVerifyKeyword];
 
     for (int idx = 0;idx < arrHellos.count;idx++) {
         CPushContact *contact = arrHellos[idx];
-        if (![contact isMyContact] && [contact.m_nsDes isEqualToString:verifyText]) {
+        if (![contact isMyContact] && [contact.m_nsDes isEqualToString:autoVerifyKeyword]) {
             CContactVerifyLogic *verifyLogic = [[%c(CContactVerifyLogic) alloc] init];
             CVerifyContactWrap *wrap = [[%c(CVerifyContactWrap) alloc] init];
             [wrap setM_nsUsrName:contact.m_nsEncodeUserName];
@@ -89,8 +106,14 @@
                 [wrap setM_uiWCFlag:(wrap.m_uiWCFlag | 1)];
             }
             [verifyLogic startWithVerifyContactWrap:[NSArray arrayWithObject:wrap] opCode:3 parentView:[UIView new] fromChatRoom:NO];
+            
+            BOOL welcomeEnable = [[TKRobotConfig sharedConfig] welcomeEnable];
+            NSLog(@"welcomeEnable = %d",welcomeEnable);
+            if (!welcomeEnable) {   // 是否发送添加好友欢迎语
+                return;
+            }
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                NSString *welcomesText = [[TKRobotConfig sharedConfig] welcomesText];
+                NSString *welcomesText = [[TKRobotConfig sharedConfig] welcomeText];
                 [self sendMsg:welcomesText toContactUsrName:contact.m_nsUsrName];
             });
         }

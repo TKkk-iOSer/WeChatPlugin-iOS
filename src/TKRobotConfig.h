@@ -12,9 +12,39 @@
 
 + (instancetype)sharedConfig;
 
-@property (nonatomic, copy) NSString *autoContactVerifyText;
-@property (nonatomic, copy) NSString *welcomesText;
-@property (nonatomic, copy) NSString *needAutoReplyMsg;
-@property (nonatomic, copy) NSString *autoReplyContent;
+/**
+  自动确认好友请求
+
+*/
+@property (nonatomic, assign) BOOL autoVerifyEnable;
+@property (nonatomic, copy) NSString *autoVerifyKeyword;            /**<    自动验证关键字  */
+
+/**
+ 确认好友请求以后，自动发送欢迎语
+
+*/
+@property (nonatomic, assign) BOOL welcomeEnable;
+@property (nonatomic, copy) NSString *welcomeText;                   /**<    好友通过欢迎语  */
+
+/**
+特定消息自动回复
+
+*/
+@property (nonatomic, assign) BOOL autoReplyEnable;
+@property (nonatomic, copy) NSString *autoReplyKeyword;             /**<    自动回复关键字  */
+@property (nonatomic, copy) NSString *autoReplyText;                /**<    自动回复的内容  */
+
+/**
+ 给好友群发消息
+ 
+ */
+@property (nonatomic, copy) NSString *groupSendText;                /**<    群发的消息内容  */
+
+/**
+ 入群欢迎语
+
+ */
+@property (nonatomic, assign) BOOL welcomeJoinChatroomEnable;
+@property (nonatomic, copy) NSString *welcomeJoinChatroomText;      /**<    入群欢迎语     */
 
 @end

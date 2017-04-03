@@ -8,10 +8,20 @@
 
 #import "TKRobotConfig.h"
 
-static NSString * const kTKAutoContactVerifyTextKey = @"kTKAutoContactVerifyTextKey";
-static NSString * const kTKWelcomesTextKey = @"kTKWelcomesTextKey";
-static NSString * const kTKNeedAutoReplyMsgKey = @"kTKNeedAutoReplyMsgKey";
-static NSString * const kTKAutoReplyContentKey = @"kTKAutoReplyContentKey";
+static NSString * const KTKAutoVerifyEnableKey = @"kTKAutoVerifyEnableKey";
+static NSString * const kTKAutoVerifyKeywordKey = @"kTKAutoVerifyKeywordKey";
+
+static NSString * const kTKWelcomeEnableKey = @"kTKWelcomeEnableKey";
+static NSString * const kTKWelcomeTextKey = @"kTKWelcomeTextKey";
+
+static NSString * const kTKAutoReplyEnableKey = @"kTKAutoReplyEnableKey";
+static NSString * const kTKAutoReplyKeywordKey = @"kTKAutoReplyKeywordKey";
+static NSString * const kTKAutoReplyTextKey = @"kTKAutoReplyTextKey";
+
+static NSString * const kTKGroupSendTextKey = @"kTKGroupSendTextKey";
+
+static NSString * const kTKWelcomeJoinChatroomEnableKey = @"kTKWelcomeJoinChatroomEnableKey";
+static NSString * const kTKWelcomeJoinChatroomTextKey = @"kTKWelcomeJoinChatroomTextKey";
 
 @implementation TKRobotConfig
 
@@ -29,36 +39,79 @@ static NSString * const kTKAutoReplyContentKey = @"kTKAutoReplyContentKey";
 {
     self = [super init];
     if (self) {
-        _autoContactVerifyText = [[NSUserDefaults standardUserDefaults] objectForKey:kTKAutoContactVerifyTextKey];
-        _welcomesText = [[NSUserDefaults standardUserDefaults] objectForKey:kTKWelcomesTextKey];
-        _needAutoReplyMsg = [[NSUserDefaults standardUserDefaults] objectForKey:kTKNeedAutoReplyMsgKey];
-        _autoReplyContent = [[NSUserDefaults standardUserDefaults] objectForKey:kTKAutoReplyContentKey];
-
+        _autoVerifyEnable = [[NSUserDefaults standardUserDefaults] boolForKey:KTKAutoVerifyEnableKey];
+        _autoVerifyKeyword = [[NSUserDefaults standardUserDefaults] objectForKey:kTKAutoVerifyKeywordKey];
+        _welcomeEnable = [[NSUserDefaults standardUserDefaults] boolForKey:kTKWelcomeEnableKey];
+        _welcomeText = [[NSUserDefaults standardUserDefaults] objectForKey:kTKWelcomeTextKey];
+        _autoReplyEnable = [[NSUserDefaults standardUserDefaults] boolForKey:kTKAutoReplyEnableKey];
+        _autoReplyKeyword = [[NSUserDefaults standardUserDefaults] objectForKey:kTKAutoReplyKeywordKey];
+        _autoReplyText = [[NSUserDefaults standardUserDefaults] objectForKey:kTKAutoReplyTextKey];
+//        _groupSendEnable = [[NSUserDefaults standardUserDefaults] boolForKey:kTKGroupSendEnableKey];
+        _groupSendText = [[NSUserDefaults standardUserDefaults] objectForKey:kTKGroupSendTextKey];
+        _welcomeJoinChatroomEnable = [[NSUserDefaults standardUserDefaults] boolForKey:kTKWelcomeJoinChatroomEnableKey];
+        _welcomeJoinChatroomText = [[NSUserDefaults standardUserDefaults] objectForKey:kTKWelcomeJoinChatroomTextKey];
     }
     return self;
 }
 
-- (void)setAutoContactVerifyText:(NSString *)autoContactVerifyText {
-    _autoContactVerifyText = autoContactVerifyText;
-    [[NSUserDefaults standardUserDefaults] setObject:autoContactVerifyText forKey:kTKAutoContactVerifyTextKey];
+- (void)setAutoVerifyEnable:(BOOL)autoVerifyEnable {
+    _autoVerifyEnable = autoVerifyEnable;
+    [[NSUserDefaults standardUserDefaults] setBool:autoVerifyEnable forKey:KTKAutoVerifyEnableKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (void)setWelcomesText:(NSString *)welcomesText {
-    _welcomesText = welcomesText;
-    [[NSUserDefaults standardUserDefaults] setObject:welcomesText forKey:kTKWelcomesTextKey];
+- (void)setAutoVerifyKeyword:(NSString *)autoVerifyKeyword {
+    _autoVerifyKeyword = autoVerifyKeyword;
+    [[NSUserDefaults standardUserDefaults] setObject:autoVerifyKeyword forKey:kTKAutoVerifyKeywordKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (void)setNeedAutoReplyMsg:(NSString *)needAutoReplyMsg {
-    _needAutoReplyMsg = needAutoReplyMsg;
-    [[NSUserDefaults standardUserDefaults] setObject:needAutoReplyMsg forKey:kTKNeedAutoReplyMsgKey];
+- (void)setWelcomeEnable:(BOOL)welcomeEnable {
+    _welcomeEnable = welcomeEnable;
+    [[NSUserDefaults standardUserDefaults] setBool:welcomeEnable forKey:kTKWelcomeEnableKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (void)setAutoReplyContent:(NSString *)autoReplyContent {
-    _autoReplyContent = autoReplyContent;
-    [[NSUserDefaults standardUserDefaults] setObject:autoReplyContent forKey:kTKAutoReplyContentKey];
+- (void)setWelcomeText:(NSString *)welcomeText {
+    _welcomeText = welcomeText;
+    [[NSUserDefaults standardUserDefaults] setObject:welcomeText forKey:kTKWelcomeTextKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
+
+- (void)setAutoReplyEnable:(BOOL)autoReplyEnable {
+    _autoReplyEnable = autoReplyEnable;
+    [[NSUserDefaults standardUserDefaults] setBool:autoReplyEnable forKey:kTKAutoReplyEnableKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)setAutoReplyKeyword:(NSString *)autoReplyKeyword {
+    _autoReplyKeyword = autoReplyKeyword;
+    [[NSUserDefaults standardUserDefaults] setObject:autoReplyKeyword forKey:kTKAutoReplyKeywordKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)setAutoReplyText:(NSString *)autoReplyText {
+    _autoReplyText = autoReplyText;
+    [[NSUserDefaults standardUserDefaults] setObject:autoReplyText forKey:kTKAutoReplyTextKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)setGroupSendText:(NSString *)groupSendText {
+    _groupSendText = groupSendText;
+    [[NSUserDefaults standardUserDefaults] setObject:groupSendText forKey:kTKGroupSendTextKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)setWelcomeJoinChatroomEnable:(BOOL)welcomeJoinChatroomEnable {
+    _welcomeJoinChatroomEnable = welcomeJoinChatroomEnable;
+    [[NSUserDefaults standardUserDefaults] setBool:welcomeJoinChatroomEnable forKey:kTKWelcomeJoinChatroomEnableKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)setWelcomeJoinChatroomText:(NSString *)welcomeJoinChatroomText {
+    _welcomeJoinChatroomText = welcomeJoinChatroomText;
+    [[NSUserDefaults standardUserDefaults] setObject:welcomeJoinChatroomText forKey:kTKWelcomeJoinChatroomTextKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 @end

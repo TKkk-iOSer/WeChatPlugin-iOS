@@ -6,6 +6,11 @@
 //  Copyright © 2017年 TK. All rights reserved.
 //
 
+#import <objc/runtime.h>
+
+#define SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)
+#define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
+
 typedef NS_ENUM(NSUInteger, TKArrayTpye) {
     TKArrayTpyeMsgWrap,
     TKArrayTpyeMsgUserName
@@ -141,15 +146,17 @@ typedef NS_ENUM(NSUInteger, TKArrayTpye) {
 - (void)clearAllSection;
 - (void)addSection:(id)arg1;
 - (void)insertSection:(id)arg1 At:(unsigned int)arg2;
+- (id)getSectionAt:(unsigned int)arg1;
 @end
 
-@interface MMTableViewSectionInfo
+@interface MMTableViewSectionInfo : NSObject
 + (id)sectionInfoDefaut;
 + (id)sectionInfoHeader:(id)arg1;
 + (id)sectionInfoHeader:(id)arg1 Footer:(id)arg2;
 - (void)addCell:(id)arg1;
+- (void)removeCellAt:(unsigned long long)arg1;
+- (unsigned long long)getCellCount;
 @end
-
 
 @interface MMTableViewCellInfo
 + (id)normalCellForSel:(SEL)arg1 target:(id)arg2 title:(id)arg3 accessoryType:(long long)arg4;
@@ -170,6 +177,10 @@ typedef NS_ENUM(NSUInteger, TKArrayTpye) {
 
 
 #pragma mark - UI
+
+@interface MMTextView : UITextView
+
+@end
 
 @interface MMUICommonUtil : NSObject
 + (id)getBarButtonWithTitle:(id)arg1 target:(id)arg2 action:(SEL)arg3 style:(int)arg4;
