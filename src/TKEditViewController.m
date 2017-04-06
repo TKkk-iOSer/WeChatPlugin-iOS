@@ -44,13 +44,12 @@
 
 - (void)setup {
     self.textView.text = self.text;
+    [self.textView becomeFirstResponder];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyBoardChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
 }
 
 - (void)keyBoardChange:(NSNotification *)note {
     CGRect keyboardFrame = [note.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
-    NSLog(@"%@",NSStringFromCGRect(keyboardFrame));
-    NSLog(@"%f",SCREEN_HEIGHT);
 
     if (keyboardFrame.origin.y < SCREEN_HEIGHT) {
         self.textView.frame = CGRectMake(7, 0, SCREEN_WIDTH - 14, SCREEN_HEIGHT - keyboardFrame.size.height);
@@ -76,10 +75,11 @@
 
 - (void)onFinfsh {
     [self.view endEditing:YES];
+    [self.navigationController popViewControllerAnimated:YES];
     if (self.endEditing) {
         self.endEditing(self.textView.text);
     }
-    [self.navigationController popViewControllerAnimated:YES];
+
 }
 
 - (void)alertControllerWithTitle:(NSString *)title message:(NSString *)message leftBlock:(void (^)(void))leftBlk  rightBlock:(void (^)(void))rightBlk {

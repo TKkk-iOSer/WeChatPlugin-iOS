@@ -7,9 +7,10 @@
 //
 
 #import "TKSettingViewController.h"
-#import "TKEditViewController.h"
 #import "WeChatRobot.h"
-#import "TKRobotConfig.h"
+#import "TKMultiSelectContactsViewController.h"
+
+
 
 @interface TKSettingViewController ()
 
@@ -36,7 +37,7 @@
 }
 
 - (void)initTitle {
-    self.title = @"TK小助手";
+    self.title = @"微信机器人";
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0]}];
 }
 
@@ -273,12 +274,16 @@
         //
         // NSLog(@"contact = %@\n,m_uiFriendScene = %d\n m_isPlugin = %d\n chatroom = %d",contact,contact.m_uiFriendScene,[contact m_isPlugin],[contact isChatroom]);
         // [messageMgr sendMsg:text toContactUsrName:contact.m_nsUsrName];
-        // [self reloadTableData];
     }];
     [self.navigationController PushViewController:editVC animated:YES];
 }
 
 - (void)settingChatRoomDesc {
+    TKMultiSelectContactsViewController *selectVC = [[TKMultiSelectContactsViewController alloc] init];
+    selectVC.title = @"选择群聊";
+    [self.navigationController PushViewController:selectVC animated:YES];
+    return;
+
     TKEditViewController *editVC = [[TKEditViewController alloc] init];
     editVC.text = [[TKRobotConfig sharedConfig] groupSendText];
     editVC.title = @"群公告设置";
@@ -287,18 +292,16 @@
         ContactsDataLogic *dataLogic = [[objc_getClass("ContactsDataLogic") alloc] initWithScene:5 delegate:nil sort:0];
         [dataLogic reloadContacts];
         NSString *chatRoomKey = [[dataLogic getKeysArray] firstObject];
-
         NSArray *chatRoomArray = [dataLogic getContactsArrayWith:chatRoomKey];
-        CContactMgr *contactMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CContactMgr")];
 
+        CContactMgr *contactMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CContactMgr")];
         CContact *selfContact = [contactMgr getSelfContact];
-        NSLog(@"self = %p %@",selfContact,selfContact);
+
         [chatRoomArray enumerateObjectsUsingBlock:^(CContact *contact, NSUInteger idx, BOOL * _Nonnull stop) {
             if([contact isChatroom] && [selfContact.m_nsUsrName isEqualToString:contact.m_nsOwner]) {
                 CGroupMgr *groupMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CGroupMgr")];
                 [groupMgr SetChatRoomDesc:contact.m_nsUsrName Desc:text Flag:1];
             }
-            NSLog(@"%@",contact.m_nsUsrName);
         }];
         [self reloadTableData];
     }];

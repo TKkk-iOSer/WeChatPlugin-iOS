@@ -7,12 +7,10 @@
 - (void)MessageReturn:(unsigned int)arg1 MessageInfo:(NSDictionary *)info Event:(unsigned int)arg3 {
     %orig;
     if (arg1 == 227) {  // 收到消息
-
         CMessageWrap *wrap = [info objectForKey:@"18"];
         NSString * content = MSHookIvar<id>(wrap, "m_nsLastDisplayContent");
         if(wrap.m_uiMessageType == 1) {    // 收到文本消息
             BOOL autoReplyEnable = [[TKRobotConfig sharedConfig] autoReplyEnable];
-            NSLog(@"autoReplyEnable = %d",autoReplyEnable);
             if (!autoReplyEnable)       // 是否开启自动回复
                 return;
 
@@ -22,9 +20,7 @@
                 [self sendMsg:autoReplyContent toContactUsrName:wrap.m_nsFromUsr];
             }
         } else if(wrap.m_uiMessageType == 10000) {          // 收到群通知，eg:群邀请了好友；删除了好友。
-            NSLog(@"content %@",content);
             BOOL welcomeJoinChatRoomEnable = [[TKRobotConfig sharedConfig] welcomeJoinChatRoomEnable];
-            NSLog(@"welcomeJoinChatRoomEnable = %d",welcomeJoinChatRoomEnable);
             if (!welcomeJoinChatRoomEnable)     // 是否开启入群欢迎语
                 return;
 
@@ -49,7 +45,6 @@
         }
     } else if (arg1 == 332) {   // 收到添加好友消息
         BOOL autoVerifyEnable = [[TKRobotConfig sharedConfig] autoVerifyEnable];
-        NSLog(@"autoVerifyEnable = %d",autoVerifyEnable);
         if (!autoVerifyEnable)
             return;
 
@@ -108,7 +103,6 @@
             [verifyLogic startWithVerifyContactWrap:[NSArray arrayWithObject:wrap] opCode:3 parentView:[UIView new] fromChatRoom:NO];
 
             BOOL welcomeEnable = [[TKRobotConfig sharedConfig] welcomeEnable];
-            NSLog(@"welcomeEnable = %d",welcomeEnable);
             if (!welcomeEnable) {   // 是否发送添加好友欢迎语
                 return;
             }
@@ -141,7 +135,7 @@
 	%orig;
 	MMTableViewInfo *tableViewInfo = MSHookIvar<id>(self, "m_tableViewInfo");
 	MMTableViewSectionInfo *sectionInfo = [%c(MMTableViewSectionInfo) sectionInfoDefaut];
-	MMTableViewCellInfo *settingCell = [%c(MMTableViewCellInfo) normalCellForSel:@selector(setting) target:self title:@"TK小助手" accessoryType:1];
+	MMTableViewCellInfo *settingCell = [%c(MMTableViewCellInfo) normalCellForSel:@selector(setting) target:self title:@"微信机器人" accessoryType:1];
 	[sectionInfo addCell:settingCell];
 	[tableViewInfo insertSection:sectionInfo At:0];
 	MMTableView *tableView = [tableViewInfo getTableView];

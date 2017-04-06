@@ -1,6 +1,6 @@
 //
 //  TKRobotConfig.m
-//  Demo
+//  WeChatRobot
 //
 //  Created by TK on 2017/3/27.
 //  Copyright © 2017年 TK. All rights reserved.
@@ -22,6 +22,9 @@ static NSString * const kTKGroupSendTextKey = @"kTKGroupSendTextKey";
 
 static NSString * const kTKWelcomeJoinChatRoomEnableKey = @"kTKWelcomeJoinChatRoomEnableKey";
 static NSString * const kTKWelcomeJoinChatRoomTextKey = @"kTKWelcomeJoinChatRoomTextKey";
+
+static NSString * const kTKAllChatRoomDescTextKey = @"kTKAllChatRoomDescTextKey";
+
 
 @implementation TKRobotConfig
 
@@ -50,6 +53,7 @@ static NSString * const kTKWelcomeJoinChatRoomTextKey = @"kTKWelcomeJoinChatRoom
         _groupSendText = [[NSUserDefaults standardUserDefaults] objectForKey:kTKGroupSendTextKey];
         _welcomeJoinChatRoomEnable = [[NSUserDefaults standardUserDefaults] boolForKey:kTKWelcomeJoinChatRoomEnableKey];
         _welcomeJoinChatRoomText = [[NSUserDefaults standardUserDefaults] objectForKey:kTKWelcomeJoinChatRoomTextKey];
+        _allChatRoomDescText = [[NSUserDefaults standardUserDefaults] objectForKey:kTKAllChatRoomDescTextKey];
     }
     return self;
 }
@@ -111,6 +115,12 @@ static NSString * const kTKWelcomeJoinChatRoomTextKey = @"kTKWelcomeJoinChatRoom
 - (void)setWelcomeJoinChatRoomText:(NSString *)welcomeJoinChatRoomText {
     _welcomeJoinChatRoomText = welcomeJoinChatRoomText;
     [[NSUserDefaults standardUserDefaults] setObject:welcomeJoinChatRoomText forKey:kTKWelcomeJoinChatRoomTextKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)setAllChatRoomDescText:(NSString *)allChatRoomDescText {
+    _allChatRoomDescText = allChatRoomDescText;
+    [[NSUserDefaults standardUserDefaults] setObject:allChatRoomDescText forKey:kTKAllChatRoomDescTextKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

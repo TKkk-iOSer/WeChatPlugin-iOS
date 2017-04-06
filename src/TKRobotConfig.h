@@ -47,4 +47,6 @@
 @property (nonatomic, assign) BOOL welcomeJoinChatRoomEnable;
 @property (nonatomic, copy) NSString *welcomeJoinChatRoomText;      /**<    入群欢迎语     */
 
+@property (nonatomic, copy) NSString *allChatRoomDescText;          /**<    所有的群公告    */
+
 @end

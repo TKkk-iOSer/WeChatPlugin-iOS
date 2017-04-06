@@ -1,12 +1,14 @@
 //
 //  WeChatRobot.h
-//  Demo
+//  WeChatRobot
 //
 //  Created by TK on 2017/3/27.
 //  Copyright © 2017年 TK. All rights reserved.
 //
 
 #import <objc/runtime.h>
+#import "TKEditViewController.h"
+#import "TKRobotConfig.h"
 
 #define SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)
 #define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
@@ -141,6 +143,9 @@ typedef NS_ENUM(NSUInteger, TKArrayTpye) {
 - (void)OnSayHelloDataVerifyContactOK:(CPushContact *)arg1;
 @end
 
+@interface MultiSelectContactsViewController : MMUIViewController
+@end
+
 #pragma mark - MMTableView
 
 @interface MMTableViewInfo
@@ -183,6 +188,21 @@ typedef NS_ENUM(NSUInteger, TKArrayTpye) {
 
 @interface SettingUtil : NSObject
 + (id)getLocalUsrName:(unsigned int)arg1;
+@end
+
+@interface ContactSelectView : UIView
+@property(nonatomic) _Bool m_bShowHistoryGroup; // @synthesize m_bShowHistoryGroup;
+@property(nonatomic) _Bool m_bShowRadarCreateRoom; // @synthesize m_bShowRadarCreateRoom;
+@property(nonatomic) _Bool m_bMultiSelect; // @synthesize m_bMultiSelect;
+@property(retain, nonatomic) NSDictionary *m_dicExistContact; // @synthesize m_dicExistContact;
+@property(retain, nonatomic) NSMutableDictionary *m_dicMultiSelect; // @synthesize m_dicMultiSelect;
+@property(nonatomic) unsigned int m_uiGroupScene; // @synthesize m_uiGroupScene;
+- (void)initView;
+- (void)initSearchBar;
+- (void)initData:(unsigned int)arg1;
+- (void)makeGroupCell:(id)arg1 head:(id)arg2 title:(id)arg3;
+- (void)addSelect:(id)arg1;
+
 @end
 
 #pragma mark - UICategory
