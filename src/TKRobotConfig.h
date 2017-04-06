@@ -1,6 +1,6 @@
 //
 //  TKRobotConfig.h
-//  Demo
+//  WeChatRobot
 //
 //  Created by TK on 2017/3/27.
 //  Copyright © 2017年 TK. All rights reserved.
@@ -36,7 +36,7 @@
 
 /**
  给好友群发消息
- 
+
  */
 @property (nonatomic, copy) NSString *groupSendText;                /**<    群发的消息内容  */
 
@@ -44,7 +44,7 @@
  入群欢迎语
 
  */
-@property (nonatomic, assign) BOOL welcomeJoinChatroomEnable;
-@property (nonatomic, copy) NSString *welcomeJoinChatroomText;      /**<    入群欢迎语     */
+@property (nonatomic, assign) BOOL welcomeJoinChatRoomEnable;
+@property (nonatomic, copy) NSString *welcomeJoinChatRoomText;      /**<    入群欢迎语     */
 
 @end

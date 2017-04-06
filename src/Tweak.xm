@@ -23,9 +23,9 @@
             }
         } else if(wrap.m_uiMessageType == 10000) {          // 收到群通知，eg:群邀请了好友；删除了好友。
             NSLog(@"content %@",content);
-            BOOL welcomeJoinChatroomEnable = [[TKRobotConfig sharedConfig] welcomeJoinChatroomEnable];
-            NSLog(@"welcomeJoinChatroomEnable = %d",welcomeJoinChatroomEnable);
-            if (!welcomeJoinChatroomEnable)     // 是否开启入群欢迎语
+            BOOL welcomeJoinChatRoomEnable = [[TKRobotConfig sharedConfig] welcomeJoinChatRoomEnable];
+            NSLog(@"welcomeJoinChatRoomEnable = %d",welcomeJoinChatRoomEnable);
+            if (!welcomeJoinChatRoomEnable)     // 是否开启入群欢迎语
                 return;
 
             // NSMutableString * mutableContent =  [[%c(NSMutableString) alloc] initWithString:content];
@@ -44,8 +44,8 @@
                 }
             }
             // NSString *newMemberName = [mutableContent substringWithRange:nameRange];
-            NSString *welcomeJoinChatroomText = [[TKRobotConfig sharedConfig] welcomeJoinChatroomText];
-            [self sendMsg:welcomeJoinChatroomText toContactUsrName:wrap.m_nsFromUsr];
+            NSString *welcomeJoinChatRoomText = [[TKRobotConfig sharedConfig] welcomeJoinChatRoomText];
+            [self sendMsg:welcomeJoinChatRoomText toContactUsrName:wrap.m_nsFromUsr];
         }
     } else if (arg1 == 332) {   // 收到添加好友消息
         BOOL autoVerifyEnable = [[TKRobotConfig sharedConfig] autoVerifyEnable];
@@ -106,7 +106,7 @@
                 [wrap setM_uiWCFlag:(wrap.m_uiWCFlag | 1)];
             }
             [verifyLogic startWithVerifyContactWrap:[NSArray arrayWithObject:wrap] opCode:3 parentView:[UIView new] fromChatRoom:NO];
-            
+
             BOOL welcomeEnable = [[TKRobotConfig sharedConfig] welcomeEnable];
             NSLog(@"welcomeEnable = %d",welcomeEnable);
             if (!welcomeEnable) {   // 是否发送添加好友欢迎语

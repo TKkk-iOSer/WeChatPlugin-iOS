@@ -1,6 +1,6 @@
 //
 //  TKSettingViewController.m
-//  Demo
+//  WeChatRobot
 //
 //  Created by TK on 2017/3/27.
 //  Copyright © 2017年 TK. All rights reserved.
@@ -43,7 +43,7 @@
 - (void)reloadTableData {
     [self.tableViewInfo clearAllSection];
     [self addContactVerifySection];
-    [self addAutoReplySection];
+    // [self addAutoReplySection];
     [self addGroupSettingSection];
 
     MMTableView *tableView = [self.tableViewInfo getTableView];
@@ -61,9 +61,9 @@
     [verifySectionInfo addCell:[self createVerifySwitchCell]];
     if (autoVerifyEnable) {
         [verifySectionInfo addCell:[self createAutoVerifyCell]];
-        [verifySectionInfo addCell:[self createWelcomeSwitchCell]];
+        // [verifySectionInfo addCell:[self createWelcomeSwitchCell]];
         if (welcomeEnable) {
-            [verifySectionInfo addCell:[self createWelcomeCell]];
+            // [verifySectionInfo addCell:[self createWelcomeCell]];
         }
     }
     [self.tableViewInfo addSection:verifySectionInfo];
@@ -83,14 +83,14 @@
 }
 
 - (void)addGroupSettingSection {
-    BOOL welcomeJoinChatroomEnable = [[TKRobotConfig sharedConfig] welcomeJoinChatroomEnable];
+    BOOL welcomeJoinChatRoomEnable = [[TKRobotConfig sharedConfig] welcomeJoinChatRoomEnable];
 
     MMTableViewSectionInfo *groupSectionInfo = [objc_getClass("MMTableViewSectionInfo") sectionInfoHeader:@"群设置" Footer:nil];
-
+    [groupSectionInfo addCell:[self createSetChatRoomDescCell]];
     [groupSectionInfo addCell:[self createGroupSendCell]];
-    [groupSectionInfo addCell:[self createWelcomeJoinChatroomSwitchCell]];
-    if (welcomeJoinChatroomEnable) {
-        [groupSectionInfo addCell:[self createWelcomeJoinChatroomCell]];
+    // [groupSectionInfo addCell:[self createWelcomeJoinChatRoomSwitchCell]];
+    if (welcomeJoinChatRoomEnable) {
+        [groupSectionInfo addCell:[self createWelcomeJoinChatRoomCell]];
     }
     [self.tableViewInfo addSection:groupSectionInfo];
 }
@@ -165,20 +165,26 @@
     return cellInfo;
 }
 
-
-- (MMTableViewCellInfo *)createWelcomeJoinChatroomSwitchCell {
-    BOOL welcomeJoinChatroomEnable = [[TKRobotConfig sharedConfig] welcomeJoinChatroomEnable];
-
-    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo") switchCellForSel:@selector(settingWelcomeJoinChatroomSwitch:)target:self title:@"开启入群欢迎" on:welcomeJoinChatroomEnable];;
+- (MMTableViewCellInfo *)createSetChatRoomDescCell {
+    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingChatRoomDesc) target:self title:@"群公告设置" rightValue:nil accessoryType:1];
 
     return cellInfo;
 }
 
-- (MMTableViewCellInfo *)createWelcomeJoinChatroomCell {
-    NSString *welcomeJoinChatroomText = [[TKRobotConfig sharedConfig] welcomeJoinChatroomText];
-    welcomeJoinChatroomText = welcomeJoinChatroomText.length == 0 ? @"请填写" : welcomeJoinChatroomText;
 
-    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingWelcomeJoinChatroom) target:self title:@"入群欢迎语" rightValue:welcomeJoinChatroomText accessoryType:1];
+- (MMTableViewCellInfo *)createWelcomeJoinChatRoomSwitchCell {
+    BOOL welcomeJoinChatRoomEnable = [[TKRobotConfig sharedConfig] welcomeJoinChatRoomEnable];
+
+    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo") switchCellForSel:@selector(settingWelcomeJoinChatRoomSwitch:)target:self title:@"开启入群欢迎" on:welcomeJoinChatRoomEnable];;
+
+    return cellInfo;
+}
+
+- (MMTableViewCellInfo *)createWelcomeJoinChatRoomCell {
+    NSString *welcomeJoinChatRoomText = [[TKRobotConfig sharedConfig] welcomeJoinChatRoomText];
+    welcomeJoinChatRoomText = welcomeJoinChatRoomText.length == 0 ? @"请填写" : welcomeJoinChatRoomText;
+
+    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingWelcomeJoinChatRoom) target:self title:@"入群欢迎语" rightValue:welcomeJoinChatRoomText accessoryType:1];
 
     return cellInfo;
 }
@@ -199,8 +205,8 @@
     [self reloadTableData];
 }
 
-- (void)settingWelcomeJoinChatroomSwitch:(UISwitch *)arg {
-    [[TKRobotConfig sharedConfig] setWelcomeJoinChatroomEnable:arg.on];
+- (void)settingWelcomeJoinChatRoomSwitch:(UISwitch *)arg {
+    [[TKRobotConfig sharedConfig] setWelcomeJoinChatRoomEnable:arg.on];
     [self reloadTableData];
 }
 
@@ -257,16 +263,54 @@
 - (void)settingGroupSend {
     TKEditViewController *editVC = [[TKEditViewController alloc] init];
     editVC.text = [[TKRobotConfig sharedConfig] groupSendText];
-    editVC.title = @"是我";
+    // editVC.title = @"是我";
+    [editVC setEndEditing:^(NSString *text) {
+        // return;
+        // CContactMgr *contactMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CContactMgr")];
+        //
+        // CMessageMgr *messageMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CMessageMgr")];
+        // NSArray *contactArray = [contactMgr getContactList:1 contactType:0];
+        //
+        // NSLog(@"contact = %@\n,m_uiFriendScene = %d\n m_isPlugin = %d\n chatroom = %d",contact,contact.m_uiFriendScene,[contact m_isPlugin],[contact isChatroom]);
+        // [messageMgr sendMsg:text toContactUsrName:contact.m_nsUsrName];
+        // [self reloadTableData];
+    }];
     [self.navigationController PushViewController:editVC animated:YES];
 }
 
-- (void)settingWelcomeJoinChatroom {
+- (void)settingChatRoomDesc {
     TKEditViewController *editVC = [[TKEditViewController alloc] init];
-    editVC.text = [[TKRobotConfig sharedConfig] welcomeJoinChatroomText];
+    editVC.text = [[TKRobotConfig sharedConfig] groupSendText];
+    editVC.title = @"群公告设置";
+    [editVC setEndEditing:^(NSString *text) {
+        // return;
+        ContactsDataLogic *dataLogic = [[objc_getClass("ContactsDataLogic") alloc] initWithScene:5 delegate:nil sort:0];
+        [dataLogic reloadContacts];
+        NSString *chatRoomKey = [[dataLogic getKeysArray] firstObject];
+
+        NSArray *chatRoomArray = [dataLogic getContactsArrayWith:chatRoomKey];
+        CContactMgr *contactMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CContactMgr")];
+
+        CContact *selfContact = [contactMgr getSelfContact];
+        NSLog(@"self = %p %@",selfContact,selfContact);
+        [chatRoomArray enumerateObjectsUsingBlock:^(CContact *contact, NSUInteger idx, BOOL * _Nonnull stop) {
+            if([contact isChatroom] && [selfContact.m_nsUsrName isEqualToString:contact.m_nsOwner]) {
+                CGroupMgr *groupMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CGroupMgr")];
+                [groupMgr SetChatRoomDesc:contact.m_nsUsrName Desc:text Flag:1];
+            }
+            NSLog(@"%@",contact.m_nsUsrName);
+        }];
+        [self reloadTableData];
+    }];
+    [self.navigationController PushViewController:editVC animated:YES];
+}
+
+- (void)settingWelcomeJoinChatRoom {
+    TKEditViewController *editVC = [[TKEditViewController alloc] init];
+    editVC.text = [[TKRobotConfig sharedConfig] welcomeJoinChatRoomText];
     editVC.title = @"请输入入群欢迎语";
     [editVC setEndEditing:^(NSString *text) {
-        [[TKRobotConfig sharedConfig] setWelcomeJoinChatroomText:text];
+        [[TKRobotConfig sharedConfig] setWelcomeJoinChatRoomText:text];
         [self reloadTableData];
     }];
     [self.navigationController PushViewController:editVC animated:YES];
