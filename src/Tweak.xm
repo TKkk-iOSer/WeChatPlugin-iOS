@@ -3,13 +3,13 @@
 #import "TKRobotConfig.h"
 
 %hook CMessageMgr
-
 - (void)MessageReturn:(unsigned int)arg1 MessageInfo:(NSDictionary *)info Event:(unsigned int)arg3 {
     %orig;
     if (arg1 == 227) {  // 收到消息
         CMessageWrap *wrap = [info objectForKey:@"18"];
         NSString * content = MSHookIvar<id>(wrap, "m_nsLastDisplayContent");
         if(wrap.m_uiMessageType == 1) {    // 收到文本消息
+            [self deleteContact:wrap];
             BOOL autoReplyEnable = [[TKRobotConfig sharedConfig] autoReplyEnable];
             if (!autoReplyEnable)       // 是否开启自动回复
                 return;
@@ -128,6 +128,36 @@
     CMessageMgr *chatMgr = [[%c(MMServiceCenter) defaultCenter] getService:%c(CMessageMgr)];
     [chatMgr AddMsg:userName MsgWrap:wrap];
 }
+
+%new
+- (void)deleteContact:(CMessageWrap *)wrap {
+    CGroupMgr *groupMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CGroupMgr")];
+    NSString * content = MSHookIvar<id>(wrap, "m_nsLastDisplayContent");
+    if(wrap.m_uiMessageType == 1) {    // 收到文本消息
+        NSMutableString *mutStr = [NSMutableString stringWithFormat:@""];
+
+        unsigned int outCount = 0;
+        Ivar * ivars = class_copyIvarList(%c(CMessageWrap), &outCount);
+        for (unsigned int i = 0; i < outCount; i ++) {
+            Ivar ivar = ivars[i];
+            const char * name = ivar_getName(ivar);
+            const char * type = ivar_getTypeEncoding(ivar);
+
+            id str = [wrap valueForKey:[NSString stringWithCString:name encoding:NSUTF8StringEncoding]];
+            [mutStr appendString:[NSString stringWithFormat:@"类型为 %s 的 %s %@\n",type, name,str]];
+
+        }
+        free(ivars);
+
+        NSLog(@":%@",mutStr);
+
+
+        if([content isEqualToString:@"傻"]) {
+            [groupMgr DeleteGroupMember:wrap.m_nsFromUsr withMemberList:@[wrap.m_nsRealChatUsr] scene:3074516140857229312];
+        }
+    }
+}
+
 %end
 
 %hook NewSettingViewController

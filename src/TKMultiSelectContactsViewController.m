@@ -19,12 +19,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor whiteColor];
 
     [self initNav];
     [self initView];
+}
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self filterOwnChatRoom];
 }
 
 - (void)initNav {
@@ -48,12 +51,12 @@
 
         selectV;
     });
-
+    NSLog(@"m_contactsDataLogic = %p,%@",[self.selectView valueForKey:@"m_contactsDataLogic"],[self.selectView valueForKey:@"m_contactsDataLogic"]);
     self.nextBtn = ({
         UIButton *btn = [[UIButton alloc] init];
         btn.frame = CGRectMake(0, SCREEN_HEIGHT - 45, SCREEN_WIDTH, 45);
         [btn setTitle:@"下一步" forState:UIControlStateNormal];
-        [btn setBackgroundColor: [UIColor colorWithRed: 0x10/255.0 green:0xc4/255.0 blue:0xd1/255.0 alpha:1]];
+        [btn setBackgroundColor: RGBA(0x10,0xc4,0xd1,0.9)];
         [btn addTarget:self action:@selector(onNext) forControlEvents:UIControlEventTouchUpInside];
 
         btn;
@@ -63,15 +66,35 @@
     [self.view addSubview:self.nextBtn];
 }
 
+- (void)filterOwnChatRoom {
+    ContactsDataLogic *contactDataLogic = [self.selectView valueForKey:@"m_contactsDataLogic"];
+    NSString *chatRoomKey = [[contactDataLogic getKeysArray] firstObject];
+    NSArray *chatRoomArray = [contactDataLogic getContactsArrayWith:chatRoomKey];
+
+    CContactMgr *contactMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CContactMgr")];
+    CContact *selfContact = [contactMgr getSelfContact];
+    NSMutableArray *owmChatRoom = [NSMutableArray array];
+    [chatRoomArray enumerateObjectsUsingBlock:^(CContact *contact, NSUInteger idx, BOOL * _Nonnull stop) {
+        if([contact isChatroom] && [selfContact.m_nsUsrName isEqualToString:contact.m_nsOwner]) {
+            [owmChatRoom addObject:contact];
+        }
+    }];
+    NSMutableDictionary *dicAllContacts = [contactDataLogic valueForKey:@"m_dicAllContacts"];
+    dicAllContacts[chatRoomKey] = owmChatRoom;
+
+    MMTableView *tableView = [self.selectView valueForKey:@"m_tableView"];
+    [tableView reloadData];
+}
+
 - (void)onBack {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)onAllSelect {
-    ContactsDataLogic *dataLogic = [[objc_getClass("ContactsDataLogic") alloc] initWithScene:5 delegate:nil sort:0];
-    [dataLogic reloadContacts];
-    NSString *chatRoomKey = [[dataLogic getKeysArray] firstObject];
-    NSArray *chatRoomArray = [dataLogic getContactsArrayWith:chatRoomKey];
+    ContactsDataLogic *contactDataLogic = [self.selectView valueForKey:@"m_contactsDataLogic"];
+
+    NSString *chatRoomKey = [[contactDataLogic getKeysArray] firstObject];
+    NSArray *chatRoomArray = [contactDataLogic getContactsArrayWith:chatRoomKey];
     [chatRoomArray enumerateObjectsUsingBlock:^(CContact *contact, NSUInteger idx, BOOL * _Nonnull stop) {
         [self.selectView addSelect:contact];
     }];
@@ -82,6 +105,7 @@
 
 - (void)onNext {
     if (self.selectView.m_dicMultiSelect.allKeys.count == 0) {
+        [TKToast toast:@"至少选择一个群聊"];
         return;
     }
 
@@ -98,7 +122,6 @@
                 CGroupMgr *groupMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CGroupMgr")];
                 [groupMgr SetChatRoomDesc:contact.m_nsUsrName Desc:text Flag:1];
             }
-            NSLog(@"%@",contact.m_nsUsrName);
         }];
     }];
     [self.navigationController PushViewController:editVC animated:YES];

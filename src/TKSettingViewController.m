@@ -10,8 +10,6 @@
 #import "WeChatRobot.h"
 #import "TKMultiSelectContactsViewController.h"
 
-
-
 @interface TKSettingViewController ()
 
 @property (nonatomic, strong) MMTableViewInfo *tableViewInfo;
@@ -88,6 +86,7 @@
 
     MMTableViewSectionInfo *groupSectionInfo = [objc_getClass("MMTableViewSectionInfo") sectionInfoHeader:@"群设置" Footer:nil];
     [groupSectionInfo addCell:[self createSetChatRoomDescCell]];
+    [groupSectionInfo addCell:[self createAutoDeleteContactCell]];
     [groupSectionInfo addCell:[self createGroupSendCell]];
     // [groupSectionInfo addCell:[self createWelcomeJoinChatRoomSwitchCell]];
     if (welcomeJoinChatRoomEnable) {
@@ -172,6 +171,11 @@
     return cellInfo;
 }
 
+- (MMTableViewCellInfo *)createAutoDeleteContactCell {
+    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingAutoDeleteContact) target:self title:@"自动踢人设置" rightValue:nil accessoryType:1];
+
+    return cellInfo;
+}
 
 - (MMTableViewCellInfo *)createWelcomeJoinChatRoomSwitchCell {
     BOOL welcomeJoinChatRoomEnable = [[TKRobotConfig sharedConfig] welcomeJoinChatRoomEnable];
@@ -306,6 +310,19 @@
         [self reloadTableData];
     }];
     [self.navigationController PushViewController:editVC animated:YES];
+}
+
+- (void)settingAutoDeleteContact {
+    TKEditViewController *editVC = [[TKEditViewController alloc] init];
+    // editVC.text = [[TKRobotConfig sharedConfig] autoReplyText];
+    [editVC setEndEditing:^(NSString *text) {
+        // [[TKRobotConfig sharedConfig] setAutoReplyText:text];
+        [self reloadTableData];
+    }];
+    editVC.title = @"敏感词";
+    [self.navigationController PushViewController:editVC animated:YES];
+
+    return;
 }
 
 - (void)settingWelcomeJoinChatRoom {

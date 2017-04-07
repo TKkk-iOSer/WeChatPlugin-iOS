@@ -9,9 +9,16 @@
 #import <objc/runtime.h>
 #import "TKEditViewController.h"
 #import "TKRobotConfig.h"
+#import "TKToast.h"
 
 #define SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)
 #define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
+//适配IP6和6+的等比放大效果
+#define FIX_SIZE(num) ((num) * SCREEN_WIDTH / 320.0)
+#define FIX_FONT_SIZE(size) SCREEN_WIDTH < 375 ? ((size + 4.0) / 2.0) : SCREEN_WIDTH == 375 ? ((size + 8.0) / 2.0) : ((size + 12.0) / 2.0)
+#define TKFont(size) [UIFont systemFontOfSize:FIX_FONT_SIZE(size)]
+#define RGBA(r, g, b, a) [UIColor colorWithRed:(r) / 255.0 green:(g) / 255.0 blue:(b) / 255.0 alpha:(a)]
+#define RGB(r, g, b) RGBA(r, g, b, 1)
 
 typedef NS_ENUM(NSUInteger, TKArrayTpye) {
     TKArrayTpyeMsgWrap,
@@ -28,11 +35,12 @@ typedef NS_ENUM(NSUInteger, TKArrayTpye) {
 @property (nonatomic, assign) unsigned int m_uiCreateTime;               // 消息生成时间
 @property (nonatomic, assign) unsigned int m_uiStatus;                   // 消息状态
 @property (nonatomic, assign) int m_uiMessageType;                       // 消息类型
+@property (nonatomic, copy) NSString *m_nsRealChatUsr;          // 群消息的发送者
 - (id)initWithMsgType:(long long)arg1;
 @end
 
 @interface CBaseContact : NSObject
-@property (nonatomic, copy) NSString *m_nsEncodeUserName;      // 微信用户名转码
+@property (nonatomic, copy) NSString *m_nsEncodeUserName;                 // 微信用户名转码
 @property (nonatomic, assign) int m_uiFriendScene;                       // 是否是自己的好友(非订阅号、自己)
 @property (nonatomic,assign) BOOL m_isPlugin;                // 是否为微信插件
 - (BOOL)isChatroom;
@@ -83,7 +91,7 @@ typedef NS_ENUM(NSUInteger, TKArrayTpye) {
                       fromChatRoom:(BOOL)arg4;
 @end
 
-@interface ContactsDataLogic
+@interface ContactsDataLogic : NSObject
 - (id)getKeysArray;
 - (BOOL)reloadContacts;
 - (BOOL)hasHistoryGroupContacts;
@@ -104,6 +112,7 @@ typedef NS_ENUM(NSUInteger, TKArrayTpye) {
 // new
 - (void)addAutoVerifyWithArray:(NSArray *)ary arrayType:(TKArrayTpye)type;
 - (void)sendMsg:(NSString *)msg toContactUsrName:(NSString *)userName;
+- (void)deleteContact:(id)arg1;
 @end
 
 @interface FriendAsistSessionMgr : NSObject
@@ -127,6 +136,7 @@ typedef NS_ENUM(NSUInteger, TKArrayTpye) {
 
 @interface CGroupMgr : NSObject
 - (BOOL)SetChatRoomDesc:(id)arg1 Desc:(id)arg2 Flag:(unsigned int)arg3;
+- (BOOL)DeleteGroupMember:(id)arg1 withMemberList:(id)arg2 scene:(unsigned long long)arg3;
 @end
 
 #pragma mark - ViewController
@@ -202,7 +212,6 @@ typedef NS_ENUM(NSUInteger, TKArrayTpye) {
 - (void)initData:(unsigned int)arg1;
 - (void)makeGroupCell:(id)arg1 head:(id)arg2 title:(id)arg3;
 - (void)addSelect:(id)arg1;
-
 @end
 
 #pragma mark - UICategory
