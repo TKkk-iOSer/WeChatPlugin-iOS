@@ -10,6 +10,7 @@
 
 @interface TKMultiSelectContactsViewController ()
 
+@property (nonatomic, strong) MMLoadingView *loadingView;
 @property (nonatomic, strong) ContactSelectView *selectView;
 @property (nonatomic, strong) UIButton *nextBtn;
 
@@ -19,25 +20,39 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor whiteColor];
 
     [self initNav];
     [self initView];
+    [self setup];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    [self filterOwnChatRoom];
+- (void)setup {
+    self.view.backgroundColor = [UIColor whiteColor];
+
+    [self.loadingView startLoading];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.loadingView stopLoading];
+        [self filterOwnChatRoom];
+        [self.selectView setHidden:NO];
+    });
 }
 
 - (void)initNav {
     self.navigationItem.leftBarButtonItem = [objc_getClass("MMUICommonUtil") getBarButtonWithTitle:@"返回" target:self action:@selector(onBack) style:3];
     self.navigationItem.rightBarButtonItem = [objc_getClass("MMUICommonUtil") getBarButtonWithTitle:@"全选" target:self action:@selector(onAllSelect) style:4];
-
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0]}];
 }
 
 - (void)initView {
+    self.loadingView = ({
+        MMLoadingView *loadingView = [[objc_getClass("MMLoadingView") alloc] init];
+        [loadingView.m_label setText:@"加载中…"];
+        [loadingView setM_bIgnoringInteractionEventsWhenLoading:YES];
+        [loadingView setFitFrame:1];
+
+        loadingView;
+    });
+
     self.selectView = ({
         CGRect frame =  CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - 45);
         ContactSelectView *selectV = [[objc_getClass("ContactSelectView") alloc] initWithFrame:frame];
@@ -47,16 +62,16 @@
         [selectV setM_dicMultiSelect:nil];
         [selectV initData:5];
         [selectV initView];
-        [selectV makeGroupCell:nil head:nil title:@"哈哈"];
+        [selectV setHidden:YES];
 
         selectV;
     });
-    NSLog(@"m_contactsDataLogic = %p,%@",[self.selectView valueForKey:@"m_contactsDataLogic"],[self.selectView valueForKey:@"m_contactsDataLogic"]);
+
     self.nextBtn = ({
         UIButton *btn = [[UIButton alloc] init];
         btn.frame = CGRectMake(0, SCREEN_HEIGHT - 45, SCREEN_WIDTH, 45);
         [btn setTitle:@"下一步" forState:UIControlStateNormal];
-        [btn setBackgroundColor: RGBA(0x10,0xc4,0xd1,0.9)];
+        [btn setBackgroundColor: [UIColor colorWithRed: 0x10/255.0 green:0xc4/255.0 blue:0xd1/255.0 alpha:1]];
         [btn addTarget:self action:@selector(onNext) forControlEvents:UIControlEventTouchUpInside];
 
         btn;
@@ -64,6 +79,7 @@
 
     [self.view addSubview:self.selectView];
     [self.view addSubview:self.nextBtn];
+    [self.view addSubview:self.loadingView];
 }
 
 - (void)filterOwnChatRoom {
@@ -92,7 +108,6 @@
 
 - (void)onAllSelect {
     ContactsDataLogic *contactDataLogic = [self.selectView valueForKey:@"m_contactsDataLogic"];
-
     NSString *chatRoomKey = [[contactDataLogic getKeysArray] firstObject];
     NSArray *chatRoomArray = [contactDataLogic getContactsArrayWith:chatRoomKey];
     [chatRoomArray enumerateObjectsUsingBlock:^(CContact *contact, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -126,6 +141,5 @@
     }];
     [self.navigationController PushViewController:editVC animated:YES];
 }
-
 
 @end

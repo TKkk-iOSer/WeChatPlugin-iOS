@@ -18,7 +18,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor whiteColor];
+
     [self initNav];
     [self initSubviews];
     [self setup];
@@ -27,7 +27,6 @@
 - (void)initNav {
     self.navigationItem.leftBarButtonItem = [objc_getClass("MMUICommonUtil") getBarButtonWithTitle:@"返回" target:self action:@selector(onBack) style:3];
     self.navigationItem.rightBarButtonItem = [objc_getClass("MMUICommonUtil") getBarButtonWithTitle:@"完成" target:self action:@selector(onFinfsh) style:4];
-
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0]}];
 }
 
@@ -44,6 +43,9 @@
 
 - (void)setup {
     self.textView.text = self.text;
+    self.textView.placeholder = self.placeholder;
+    self.view.backgroundColor = [UIColor whiteColor];
+
     [self.textView becomeFirstResponder];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyBoardChange:) name:UIKeyboardWillChangeFrameNotification object:nil];
 }
@@ -64,9 +66,9 @@
                                message:nil
                              leftBlock:nil
                             rightBlock:^() {
-             [self.view endEditing:YES];
-             [self.navigationController popViewControllerAnimated:YES];
-        }];
+                                [self.view endEditing:YES];
+                                [self.navigationController popViewControllerAnimated:YES];
+                            }];
     } else {
         [self.view endEditing:YES];
         [self.navigationController popViewControllerAnimated:YES];
@@ -75,35 +77,34 @@
 
 - (void)onFinfsh {
     [self.view endEditing:YES];
-    [self.navigationController popViewControllerAnimated:YES];
     if (self.endEditing) {
         self.endEditing(self.textView.text);
     }
-
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)alertControllerWithTitle:(NSString *)title message:(NSString *)message leftBlock:(void (^)(void))leftBlk  rightBlock:(void (^)(void))rightBlk {
     UIAlertController *alertController = ({
         UIAlertController *alert = [UIAlertController
                                     alertControllerWithTitle:title
-                                                     message:nil
-                                              preferredStyle:UIAlertControllerStyleAlert];
+                                    message:nil
+                                    preferredStyle:UIAlertControllerStyleAlert];
 
         [alert addAction:[UIAlertAction actionWithTitle:@"取消"
                                                   style:UIAlertActionStyleCancel
-                                                  handler:^(UIAlertAction * _Nonnull action) {
-            if (leftBlk) {
-                leftBlk();
-            }
-        }]];
+                                                handler:^(UIAlertAction * _Nonnull action) {
+                                                    if (leftBlk) {
+                                                        leftBlk();
+                                                    }
+                                                }]];
 
         [alert addAction:[UIAlertAction actionWithTitle:@"确定"
                                                   style:UIAlertActionStyleDefault
                                                 handler:^(UIAlertAction * _Nonnull action) {
-            if (rightBlk) {
-                rightBlk();
-            }
-        }]];
+                                                    if (rightBlk) {
+                                                        rightBlk();
+                                                    }
+                                                }]];
 
         alert;
     });

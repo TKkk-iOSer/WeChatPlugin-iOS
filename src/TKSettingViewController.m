@@ -9,6 +9,8 @@
 #import "TKSettingViewController.h"
 #import "WeChatRobot.h"
 #import "TKMultiSelectContactsViewController.h"
+#import "TKChatRoomSensitiveViewController.h"
+#import "TKToast.h"
 
 @interface TKSettingViewController ()
 
@@ -35,14 +37,15 @@
 }
 
 - (void)initTitle {
-    self.title = @"微信机器人";
+    self.title = @"微信小助手";
     [self.navigationController.navigationBar setTitleTextAttributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:18.0]}];
 }
 
 - (void)reloadTableData {
     [self.tableViewInfo clearAllSection];
+    [self addNiubilitySection];
     [self addContactVerifySection];
-    // [self addAutoReplySection];
+    [self addAutoReplySection];
     [self addGroupSettingSection];
 
     MMTableView *tableView = [self.tableViewInfo getTableView];
@@ -50,30 +53,41 @@
 }
 
 #pragma mark - 设置 TableView
+- (void)addNiubilitySection {
+    MMTableViewSectionInfo *sectionInfo = [objc_getClass("MMTableViewSectionInfo") sectionInfoHeader:@"装逼必备" Footer:nil];
+    [sectionInfo addCell:[self createStepSwitchCell]];
+
+    BOOL changeStepEnable = [[TKRobotConfig sharedConfig] changeStepEnable];
+    if (changeStepEnable) {
+        [sectionInfo addCell:[self createStepCountCell]];
+    }
+    [sectionInfo addCell:[self createRevokeSwitchCell]];
+
+    [self.tableViewInfo addSection:sectionInfo];
+}
 
 - (void)addContactVerifySection {
-    BOOL autoVerifyEnable = [[TKRobotConfig sharedConfig] autoVerifyEnable];
-    BOOL welcomeEnable = [[TKRobotConfig sharedConfig] welcomeEnable];
-
     MMTableViewSectionInfo *verifySectionInfo = [objc_getClass("MMTableViewSectionInfo") sectionInfoHeader:@"过滤好友请求设置" Footer:nil];
-
     [verifySectionInfo addCell:[self createVerifySwitchCell]];
+
+    BOOL autoVerifyEnable = [[TKRobotConfig sharedConfig] autoVerifyEnable];
     if (autoVerifyEnable) {
         [verifySectionInfo addCell:[self createAutoVerifyCell]];
-        // [verifySectionInfo addCell:[self createWelcomeSwitchCell]];
-        if (welcomeEnable) {
-            // [verifySectionInfo addCell:[self createWelcomeCell]];
+
+        BOOL autoWelcomeEnable = [[TKRobotConfig sharedConfig] autoWelcomeEnable];
+        [verifySectionInfo addCell:[self createWelcomeSwitchCell]];
+        if (autoWelcomeEnable) {
+            [verifySectionInfo addCell:[self createWelcomeCell]];
         }
     }
     [self.tableViewInfo addSection:verifySectionInfo];
 }
 
 - (void)addAutoReplySection {
-    BOOL autoReplyEnable = [[TKRobotConfig sharedConfig] autoReplyEnable];
-
     MMTableViewSectionInfo *autoReplySectionInfo = [objc_getClass("MMTableViewSectionInfo") sectionInfoHeader:@"自动回复设置" Footer:nil];
-
     [autoReplySectionInfo addCell:[self createAutoReplySwitchCell]];
+
+    BOOL autoReplyEnable = [[TKRobotConfig sharedConfig] autoReplyEnable];
     if (autoReplyEnable) {
         [autoReplySectionInfo addCell:[self createAutoReplyKeywordCell]];
         [autoReplySectionInfo addCell:[self createAutoReplyTextCell]];
@@ -82,23 +96,51 @@
 }
 
 - (void)addGroupSettingSection {
-    BOOL welcomeJoinChatRoomEnable = [[TKRobotConfig sharedConfig] welcomeJoinChatRoomEnable];
-
     MMTableViewSectionInfo *groupSectionInfo = [objc_getClass("MMTableViewSectionInfo") sectionInfoHeader:@"群设置" Footer:nil];
     [groupSectionInfo addCell:[self createSetChatRoomDescCell]];
-    [groupSectionInfo addCell:[self createAutoDeleteContactCell]];
-    [groupSectionInfo addCell:[self createGroupSendCell]];
-    // [groupSectionInfo addCell:[self createWelcomeJoinChatRoomSwitchCell]];
+    [groupSectionInfo addCell:[self createAutoDeleteMemberCell]];
+    [groupSectionInfo addCell:[self createWelcomeJoinChatRoomSwitchCell]];
+
+    BOOL welcomeJoinChatRoomEnable = [[TKRobotConfig sharedConfig] welcomeJoinChatRoomEnable];
     if (welcomeJoinChatRoomEnable) {
         [groupSectionInfo addCell:[self createWelcomeJoinChatRoomCell]];
     }
+    [groupSectionInfo addCell:[self createAutoReplyChatRoomSwitchCell]];
+
+    BOOL autoReplyChatRoomEnable = [[TKRobotConfig sharedConfig] autoReplyChatRoomEnable];
+    if (autoReplyChatRoomEnable) {
+        [groupSectionInfo addCell:[self createAutoReplyChatRoomKeywordCell]];
+        [groupSectionInfo addCell:[self createAutoReplyChatRoomTextCell]];
+    }
+
     [self.tableViewInfo addSection:groupSectionInfo];
+}
+
+#pragma mark - 装逼必备
+- (MMTableViewCellInfo *)createStepSwitchCell {
+    BOOL changeStepEnable = [[TKRobotConfig sharedConfig] changeStepEnable];
+    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo") switchCellForSel:@selector(settingStepSwitch:) target:self title:@"是否修改微信步数" on:changeStepEnable];
+
+    return cellInfo;
+}
+
+- (MMTableViewCellInfo *)createStepCountCell {
+    NSInteger deviceStep = [[TKRobotConfig sharedConfig] deviceStep];
+    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingStepCount) target:self title:@"微信运动步数" rightValue:[NSString stringWithFormat:@"%ld", (long)deviceStep] accessoryType:1];
+
+    return cellInfo;
+}
+
+- (MMTableViewCellInfo *)createRevokeSwitchCell {
+    BOOL preventRevokeEnable = [[TKRobotConfig sharedConfig] preventRevokeEnable];
+    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo") switchCellForSel:@selector(settingRevokeSwitch:) target:self title:@"拦截撤回消息" on:preventRevokeEnable];
+
+    return cellInfo;
 }
 
 #pragma mark - 添加好友设置
 - (MMTableViewCellInfo *)createVerifySwitchCell {
     BOOL autoVerifyEnable = [[TKRobotConfig sharedConfig] autoVerifyEnable];
-
     MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo") switchCellForSel:@selector(settingVerifySwitch:) target:self title:@"开启自动添加好友" on:autoVerifyEnable];
 
     return cellInfo;
@@ -107,25 +149,22 @@
 - (MMTableViewCellInfo *)createAutoVerifyCell {
     NSString *verifyText = [[TKRobotConfig sharedConfig] autoVerifyKeyword];
     verifyText = verifyText.length == 0 ? @"请填写" : verifyText;
-
-    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingVerify) target:self title:@"请求验证关键词" rightValue:verifyText accessoryType:1];
+    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingVerify) target:self title:@"自动通过关键词" rightValue:verifyText accessoryType:1];
 
     return cellInfo;
 }
 
 - (MMTableViewCellInfo *)createWelcomeSwitchCell {
-    BOOL welcomeEnable = [[TKRobotConfig sharedConfig] welcomeEnable];
-
-    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo") switchCellForSel:@selector(settingWelcomeSwitch:)target:self title:@"开启通过验证欢迎语" on:welcomeEnable];;
+    BOOL autoVerifyEnable = [[TKRobotConfig sharedConfig] autoWelcomeEnable];
+    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo") switchCellForSel:@selector(settingWelcomeSwitch:) target:self title:@"开启欢迎语" on:autoVerifyEnable];
 
     return cellInfo;
 }
 
 - (MMTableViewCellInfo *)createWelcomeCell {
-    NSString *welcomes = [[TKRobotConfig sharedConfig] welcomeText];
-    welcomes = welcomes.length == 0 ? @"请填写" : welcomes;
-
-    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingWelcome) target:self title:@"验证通过欢迎语" rightValue:welcomes accessoryType:1];
+    NSString *welcomeText = [[TKRobotConfig sharedConfig] autoWelcomeText];
+    welcomeText = welcomeText.length == 0 ? @"请填写" : welcomeText;
+    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingWelcome) target:self title:@"欢迎语内容" rightValue:welcomeText accessoryType:1];
 
     return cellInfo;
 }
@@ -133,8 +172,7 @@
 #pragma mark - 自动回复设置
 - (MMTableViewCellInfo *)createAutoReplySwitchCell {
     BOOL autoReplyEnable = [[TKRobotConfig sharedConfig] autoReplyEnable];
-
-    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo") switchCellForSel:@selector(settingAutoReplySwitch:)target:self title:@"开启自动回复" on:autoReplyEnable];;
+    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo") switchCellForSel:@selector(settingAutoReplySwitch:)target:self title:@"开启个人消息自动回复" on:autoReplyEnable];;
 
     return cellInfo;
 }
@@ -142,7 +180,6 @@
 - (MMTableViewCellInfo *)createAutoReplyKeywordCell {
     NSString *autoReplyKeyword = [[TKRobotConfig sharedConfig] autoReplyKeyword];
     autoReplyKeyword = autoReplyKeyword.length == 0 ? @"请填写" : autoReplyKeyword;
-
     MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingAutoReplyKeyword) target:self title:@"特定消息" rightValue:autoReplyKeyword accessoryType:1];
 
     return cellInfo;
@@ -151,19 +188,12 @@
 - (MMTableViewCellInfo *)createAutoReplyTextCell {
     NSString *autoReply = [[TKRobotConfig sharedConfig] autoReplyText];
     autoReply = autoReply.length == 0 ? @"请填写" : autoReply;
-
     MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingAutoReply) target:self title:@"自动回复内容" rightValue:autoReply accessoryType:1];
 
     return cellInfo;
 }
 
-#pragma mark - 入群欢迎语
-
-- (MMTableViewCellInfo *)createGroupSendCell {
-    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingGroupSend) target:self title:@"群发设置" rightValue:nil accessoryType:1];
-
-    return cellInfo;
-}
+#pragma mark - 群相关设置
 
 - (MMTableViewCellInfo *)createSetChatRoomDescCell {
     MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingChatRoomDesc) target:self title:@"群公告设置" rightValue:nil accessoryType:1];
@@ -171,16 +201,15 @@
     return cellInfo;
 }
 
-- (MMTableViewCellInfo *)createAutoDeleteContactCell {
-    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingAutoDeleteContact) target:self title:@"自动踢人设置" rightValue:nil accessoryType:1];
+- (MMTableViewCellInfo *)createAutoDeleteMemberCell {
+    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingAutoDeleteMember) target:self title:@"自动踢人设置" rightValue:nil accessoryType:1];
 
     return cellInfo;
 }
 
 - (MMTableViewCellInfo *)createWelcomeJoinChatRoomSwitchCell {
     BOOL welcomeJoinChatRoomEnable = [[TKRobotConfig sharedConfig] welcomeJoinChatRoomEnable];
-
-    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo") switchCellForSel:@selector(settingWelcomeJoinChatRoomSwitch:)target:self title:@"开启入群欢迎" on:welcomeJoinChatRoomEnable];;
+    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo") switchCellForSel:@selector(settingWelcomeJoinChatRoomSwitch:)target:self title:@"开启入群欢迎语" on:welcomeJoinChatRoomEnable];;
 
     return cellInfo;
 }
@@ -188,37 +217,68 @@
 - (MMTableViewCellInfo *)createWelcomeJoinChatRoomCell {
     NSString *welcomeJoinChatRoomText = [[TKRobotConfig sharedConfig] welcomeJoinChatRoomText];
     welcomeJoinChatRoomText = welcomeJoinChatRoomText.length == 0 ? @"请填写" : welcomeJoinChatRoomText;
-
     MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingWelcomeJoinChatRoom) target:self title:@"入群欢迎语" rightValue:welcomeJoinChatRoomText accessoryType:1];
 
     return cellInfo;
 }
 
+- (MMTableViewCellInfo *)createAutoReplyChatRoomSwitchCell {
+    BOOL autoReplyChatRoomEnable = [[TKRobotConfig sharedConfig] autoReplyChatRoomEnable];
+    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo") switchCellForSel:@selector(settingAutoReplyChatRoomSwitch:)target:self title:@"开启群消息自动回复" on:autoReplyChatRoomEnable];;
+
+    return cellInfo;
+}
+
+- (MMTableViewCellInfo *)createAutoReplyChatRoomKeywordCell {
+    NSString *autoReplyChatRoomKeyword = [[TKRobotConfig sharedConfig] autoReplyChatRoomKeyword];
+    autoReplyChatRoomKeyword = autoReplyChatRoomKeyword.length == 0 ? @"请填写" : autoReplyChatRoomKeyword;
+    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingAutoReplyChatRoomKeyword) target:self title:@"特定消息" rightValue:autoReplyChatRoomKeyword accessoryType:1];
+
+    return cellInfo;
+}
+
+- (MMTableViewCellInfo *)createAutoReplyChatRoomTextCell {
+    NSString *autoReplyChatRoomText = [[TKRobotConfig sharedConfig] autoReplyChatRoomText];
+    autoReplyChatRoomText = autoReplyChatRoomText.length == 0 ? @"请填写" : autoReplyChatRoomText;
+    MMTableViewCellInfo *cellInfo = [objc_getClass("MMTableViewCellInfo")  normalCellForSel:@selector(settingAutoReplyChatRoom) target:self title:@"自动回复内容" rightValue:autoReplyChatRoomText accessoryType:1];
+
+    return cellInfo;
+}
+
 #pragma mark - 设置cell相应的方法
+- (void)settingStepSwitch:(UISwitch *)arg {
+    [[TKRobotConfig sharedConfig] setChangeStepEnable:arg.on];
+    [self reloadTableData];
+}
+
+- (void)settingStepCount {
+    NSInteger deviceStep = [[TKRobotConfig sharedConfig] deviceStep];
+    [self alertControllerWithTitle:@"微信运动设置"
+                           message:@"步数需比之前设置的步数大才能生效，最大值为98800"
+                           content:[NSString stringWithFormat:@"%ld", (long)deviceStep]
+                       placeholder:@"请输入步数"
+                      keyboardType:UIKeyboardTypeNumberPad
+                               blk:^(UITextField *textField) {
+                                   [[TKRobotConfig sharedConfig] setDeviceStep:textField.text.integerValue];
+                                   [self reloadTableData];
+                               }];
+}
+
+- (void)settingRevokeSwitch:(UISwitch *)arg {
+    [[TKRobotConfig sharedConfig] setPreventRevokeEnable:arg.on];
+    [self reloadTableData];
+}
+
 - (void)settingVerifySwitch:(UISwitch *)arg {
     [[TKRobotConfig sharedConfig] setAutoVerifyEnable:arg.on];
     [self reloadTableData];
 }
 
-- (void)settingWelcomeSwitch:(UISwitch *)arg {
-    [[TKRobotConfig sharedConfig] setWelcomeEnable:arg.on];
-    [self reloadTableData];
-}
-
-- (void)settingAutoReplySwitch:(UISwitch *)arg {
-    [[TKRobotConfig sharedConfig] setAutoReplyEnable:arg.on];
-    [self reloadTableData];
-}
-
-- (void)settingWelcomeJoinChatRoomSwitch:(UISwitch *)arg {
-    [[TKRobotConfig sharedConfig] setWelcomeJoinChatRoomEnable:arg.on];
-    [self reloadTableData];
-}
-
 - (void)settingVerify {
     NSString *verifyText = [[TKRobotConfig sharedConfig] autoVerifyKeyword];
-    [self alertControllerWithTitle:@"自动添加好友设置"
-                           message:verifyText
+    [self alertControllerWithTitle:@"自动通过设置"
+                           message:@"新的好友发送的验证内容与该关键字一致时，则自动通过"
+                           content:verifyText
                        placeholder:@"请输入好友请求关键字"
                                blk:^(UITextField *textField) {
                                    [[TKRobotConfig sharedConfig] setAutoVerifyKeyword:textField.text];
@@ -228,24 +288,34 @@
                                }];
 }
 
+
+- (void)settingWelcomeSwitch:(UISwitch *)arg {
+    [[TKRobotConfig sharedConfig] setAutoWelcomeEnable:arg.on];
+    [self reloadTableData];
+}
+
 - (void)settingWelcome {
     TKEditViewController *editVC = [[TKEditViewController alloc] init];
-    editVC.text = [[TKRobotConfig sharedConfig] welcomeText];
-    editVC.title = @"请输入验证通过欢迎语";
+    editVC.text = [[TKRobotConfig sharedConfig] autoWelcomeText];
     [editVC setEndEditing:^(NSString *text) {
-        [[TKRobotConfig sharedConfig] setWelcomeText:text];
+        [[TKRobotConfig sharedConfig] setAutoWelcomeText:text];
         [self reloadTableData];
     }];
+    editVC.title = @"请输入欢迎语内容";
+    editVC.placeholder = @"当自动通过好友请求时，则自动发送欢迎语；\n若手动通过，则不发送";
     [self.navigationController PushViewController:editVC animated:YES];
+}
 
-    return;
+- (void)settingAutoReplySwitch:(UISwitch *)arg {
+    [[TKRobotConfig sharedConfig] setAutoReplyEnable:arg.on];
+    [self reloadTableData];
 }
 
 - (void)settingAutoReplyKeyword {
     NSString *autoReplyKeyword = [[TKRobotConfig sharedConfig] autoReplyKeyword];
-    [self alertControllerWithTitle:@"特点消息设置"
-                           message:autoReplyKeyword
-                       placeholder:@"请输入特定消息"
+    [self alertControllerWithTitle:@"个人消息自动回复"
+                           content:autoReplyKeyword
+                       placeholder:@"请输入消息关键字"
                                blk:^(UITextField *textField) {
                                    [[TKRobotConfig sharedConfig] setAutoReplyKeyword:textField.text];
                                    [self reloadTableData];
@@ -253,76 +323,46 @@
 }
 
 - (void)settingAutoReply {
-    TKEditViewController *editVC = [[TKEditViewController alloc] init];
-    editVC.text = [[TKRobotConfig sharedConfig] autoReplyText];
-    [editVC setEndEditing:^(NSString *text) {
+    TKEditViewController *editViewController = [[TKEditViewController alloc] init];
+    editViewController.text = [[TKRobotConfig sharedConfig] autoReplyText];
+    [editViewController setEndEditing:^(NSString *text) {
         [[TKRobotConfig sharedConfig] setAutoReplyText:text];
         [self reloadTableData];
     }];
-    editVC.title = @"请输入自动回复的内容";
-    [self.navigationController PushViewController:editVC animated:YES];
-
-    return;
+    editViewController.title = @"请输入自动回复的内容";
+    [self.navigationController PushViewController:editViewController animated:YES];
 }
 
-- (void)settingGroupSend {
-    TKEditViewController *editVC = [[TKEditViewController alloc] init];
-    editVC.text = [[TKRobotConfig sharedConfig] groupSendText];
-    // editVC.title = @"是我";
-    [editVC setEndEditing:^(NSString *text) {
-        // return;
-        // CContactMgr *contactMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CContactMgr")];
-        //
-        // CMessageMgr *messageMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CMessageMgr")];
-        // NSArray *contactArray = [contactMgr getContactList:1 contactType:0];
-        //
-        // NSLog(@"contact = %@\n,m_uiFriendScene = %d\n m_isPlugin = %d\n chatroom = %d",contact,contact.m_uiFriendScene,[contact m_isPlugin],[contact isChatroom]);
-        // [messageMgr sendMsg:text toContactUsrName:contact.m_nsUsrName];
-    }];
-    [self.navigationController PushViewController:editVC animated:YES];
+- (void)settingAutoReplyChatRoomSwitch:(UISwitch *)arg {
+    [[TKRobotConfig sharedConfig] setAutoReplyChatRoomEnable:arg.on];
+    [self reloadTableData];
 }
 
-- (void)settingChatRoomDesc {
-    TKMultiSelectContactsViewController *selectVC = [[TKMultiSelectContactsViewController alloc] init];
-    selectVC.title = @"选择群聊";
-    [self.navigationController PushViewController:selectVC animated:YES];
-    return;
+- (void)settingAutoReplyChatRoomKeyword {
+    NSString *autoReplyChatRoomKeyword = [[TKRobotConfig sharedConfig] autoReplyChatRoomKeyword];
+    [self alertControllerWithTitle:@"群消息自动回复"
+                           content:autoReplyChatRoomKeyword
+                       placeholder:@"请输入消息关键字"
+                               blk:^(UITextField *textField) {
+                                   [[TKRobotConfig sharedConfig] setAutoReplyChatRoomKeyword:textField.text];
+                                   [self reloadTableData];
+                               }];
+}
 
-    TKEditViewController *editVC = [[TKEditViewController alloc] init];
-    editVC.text = [[TKRobotConfig sharedConfig] groupSendText];
-    editVC.title = @"群公告设置";
-    [editVC setEndEditing:^(NSString *text) {
-        // return;
-        ContactsDataLogic *dataLogic = [[objc_getClass("ContactsDataLogic") alloc] initWithScene:5 delegate:nil sort:0];
-        [dataLogic reloadContacts];
-        NSString *chatRoomKey = [[dataLogic getKeysArray] firstObject];
-        NSArray *chatRoomArray = [dataLogic getContactsArrayWith:chatRoomKey];
-
-        CContactMgr *contactMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CContactMgr")];
-        CContact *selfContact = [contactMgr getSelfContact];
-
-        [chatRoomArray enumerateObjectsUsingBlock:^(CContact *contact, NSUInteger idx, BOOL * _Nonnull stop) {
-            if([contact isChatroom] && [selfContact.m_nsUsrName isEqualToString:contact.m_nsOwner]) {
-                CGroupMgr *groupMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CGroupMgr")];
-                [groupMgr SetChatRoomDesc:contact.m_nsUsrName Desc:text Flag:1];
-            }
-        }];
+- (void)settingAutoReplyChatRoom {
+    TKEditViewController *editViewController = [[TKEditViewController alloc] init];
+    editViewController.text = [[TKRobotConfig sharedConfig] autoReplyChatRoomText];
+    [editViewController setEndEditing:^(NSString *text) {
+        [[TKRobotConfig sharedConfig] setAutoReplyChatRoomText:text];
         [self reloadTableData];
     }];
-    [self.navigationController PushViewController:editVC animated:YES];
+    editViewController.title = @"请输入自动回复的内容";
+    [self.navigationController PushViewController:editViewController animated:YES];
 }
 
-- (void)settingAutoDeleteContact {
-    TKEditViewController *editVC = [[TKEditViewController alloc] init];
-    // editVC.text = [[TKRobotConfig sharedConfig] autoReplyText];
-    [editVC setEndEditing:^(NSString *text) {
-        // [[TKRobotConfig sharedConfig] setAutoReplyText:text];
-        [self reloadTableData];
-    }];
-    editVC.title = @"敏感词";
-    [self.navigationController PushViewController:editVC animated:YES];
-
-    return;
+- (void)settingWelcomeJoinChatRoomSwitch:(UISwitch *)arg {
+    [[TKRobotConfig sharedConfig] setWelcomeJoinChatRoomEnable:arg.on];
+    [self reloadTableData];
 }
 
 - (void)settingWelcomeJoinChatRoom {
@@ -334,15 +374,64 @@
         [self reloadTableData];
     }];
     [self.navigationController PushViewController:editVC animated:YES];
-
-    return;
 }
 
-- (void)alertControllerWithTitle:(NSString *)title message:(NSString *)message placeholder:(NSString *)placeholder blk:(void (^)(UITextField *))blk {
+- (void)settingChatRoomDesc {
+    TKMultiSelectContactsViewController *selectVC = [[TKMultiSelectContactsViewController alloc] init];
+    selectVC.title = @"我创建的群聊";
+    [self.navigationController PushViewController:selectVC animated:YES];
+}
+
+- (void)settingAutoDeleteMember {
+    TKChatRoomSensitiveViewController *vc = [[TKChatRoomSensitiveViewController alloc] init];
+    vc.title = @"设置敏感词";
+    [self.navigationController PushViewController:vc animated:YES];
+}
+
+// - (void)settingAutoCreateGroup {
+//     [self alertControllerWithTitle:@"选择联系人"
+//                            message:nil
+//                        placeholder:@"请输入联系人过滤条件"
+//                                blk:^(UITextField *textField) {
+//                                    CContactMgr *contactMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CContactMgr")];
+//
+//                                    NSArray *contactArray = [contactMgr getContactList:1 contactType:0];
+//                                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"((m_nsNickName CONTAINS %@) OR (m_nsRemark CONTAINS %@)) AND isChatroom = 0 AND m_isPlugin == 0 AND m_uiFriendScene != 0", textField.text, textField.text];
+//                                    NSArray *filteredArray = [contactArray filteredArrayUsingPredicate:predicate];
+//                                    NSMutableArray *memberList = [[NSMutableArray alloc] init];
+//                                    [filteredArray enumerateObjectsUsingBlock:^(CContact *contact, NSUInteger idx, BOOL * _Nonnull stop) {
+//                                          GroupMember *member = [[objc_getClass("GroupMember") alloc] init];
+//                                          member.m_nsMemberName = contact.m_nsUsrName;
+//                                          member.m_uiMemberStatus = 0;
+//                                          member.m_nsNickName = contact.m_nsNickName;
+//                                          [memberList addObject:member];
+//                                     }];
+//
+//                                     [self alertControllerWithTitle:@"群名称"
+//                                                            message:nil
+//                                                        placeholder:@"请输入群名称"
+//                                                                blk:^(UITextField *textField) {
+//                                         CGroupMgr *groupMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CGroupMgr")];
+//                                         [groupMgr CreateGroup:textField.text withMemberList:memberList];
+//
+//                                         [TKToast toast:@"建群成功，请在会话列表中查看..."];
+//                                     }];
+//                                }];
+// }
+
+- (void)alertControllerWithTitle:(NSString *)title content:(NSString *)content placeholder:(NSString *)placeholder blk:(void (^)(UITextField *))blk {
+    [self alertControllerWithTitle:title message:nil content:content placeholder:placeholder blk:blk];
+}
+
+- (void)alertControllerWithTitle:(NSString *)title message:(NSString *)message content:(NSString *)content placeholder:(NSString *)placeholder blk:(void (^)(UITextField *))blk {
+    [self alertControllerWithTitle:title message:message content:content placeholder:placeholder keyboardType:UIKeyboardTypeDefault blk:blk];
+}
+
+- (void)alertControllerWithTitle:(NSString *)title message:(NSString *)message content:(NSString *)content placeholder:(NSString *)placeholder keyboardType:(UIKeyboardType)keyboardType blk:(void (^)(UITextField *))blk  {
     UIAlertController *alertController = ({
         UIAlertController *alert = [UIAlertController
                                     alertControllerWithTitle:title
-                                    message:nil
+                                    message:message
                                     preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:@"取消"
                                                   style:UIAlertActionStyleCancel
@@ -357,7 +446,8 @@
 
         [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
             textField.placeholder = placeholder;
-            textField.text = message;
+            textField.text = content;
+            textField.keyboardType = keyboardType;
         }];
 
         alert;
