@@ -1,4 +1,11 @@
+## WeChatPlugin-iOS
+
 微信小助手-iOS版 v1.0.0  
+
+![DA625F758AAF00799C9D01C310E005EA.jpg](http://upload-images.jianshu.io/upload_images/965383-1ca060e6f11fe8b6.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+**mac OS 版请戳→_→ [WeChatPlugin-MacOS](https://github.com/TKkk-iOSer/WeChatPlugin-MacOS)**
 
 ---
 
