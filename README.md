@@ -2,7 +2,7 @@
 
 微信小助手-iOS版 v1.0.0  
 
-![DA625F758AAF00799C9D01C310E005EA.jpg](https://github.com/TKkk-iOSer/WeChatPlugin-iOS/blob/master/Others/ScreenShots/WeChatPlugin.jpg?raw=true)
+<img src="./Others/ScreenShots/WeChatPlugin.jpg" width="500">
 
 
 **mac OS 版请戳→_→ [WeChatPlugin-MacOS](https://github.com/TKkk-iOSer/WeChatPlugin-MacOS)**
@@ -28,9 +28,9 @@
 
 设置界面：
 
-![picture-1.jpeg](https://github.com/TKkk-iOSer/WeChatPlugin-iOS/blob/master/Others/ScreenShots/Setting-01.jpg?raw=true)
+<img src="./Others/ScreenShots/Setting-01.jpg" height="500" hspace="30">
+<img src="./Others/ScreenShots/Setting-02.jpg" height="500" hspace="30">
 
-![picture-2.jpeg](https://github.com/TKkk-iOSer/WeChatPlugin-iOS/blob/master/Others/ScreenShots/Setting-02.jpg?raw=true)
 
 ---
 
