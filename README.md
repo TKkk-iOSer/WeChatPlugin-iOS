@@ -2,7 +2,7 @@
 
 微信小助手-iOS版 v1.0.0  
 
-![DA625F758AAF00799C9D01C310E005EA.jpg](http://upload-images.jianshu.io/upload_images/965383-1ca060e6f11fe8b6.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![DA625F758AAF00799C9D01C310E005EA.jpg](https://github.com/TKkk-iOSer/WeChatPlugin-iOS/tree/master/Others/ScreenShots/WeChatPlugin.jpg)
 
 
 **mac OS 版请戳→_→ [WeChatPlugin-MacOS](https://github.com/TKkk-iOSer/WeChatPlugin-MacOS)**
@@ -28,9 +28,9 @@
 
 设置界面：
 
-![picture-1.jpeg](http://upload-images.jianshu.io/upload_images/965383-aa19103e8a777015.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![picture-1.jpeg](https://github.com/TKkk-iOSer/WeChatPlugin-iOS/tree/master/Others/ScreenShots/Setting-01.jpg)
 
-![picture-2.jpeg](http://upload-images.jianshu.io/upload_images/965383-1586d59cdd7f5b37.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![picture-2.jpeg](https://github.com/TKkk-iOSer/WeChatPlugin-iOS/tree/master/Others/ScreenShots/Setting-02.jpg)
 
 ---
 
@@ -44,6 +44,8 @@
 * Xcode 或者 PP助手 (安装ipa)
 * iOS 证书(可用Xcode生成临时开发证书，然而只能用7天)
 * ipa文件(可直接下载下面百度云的app文件，如果重新注入动态库，请于PP助手下载**越狱版**的微信)
+* [theos](https://github.com/theos/theos)(编写tweak工具，若不修改源码则不需要该工具)
+
 
 #### 1. 生成临时证书(~~若有证书忽略该步骤~~)
 使用 Xcode 创建一个 iOS 的 Project，选择方框1 的开发者，并用真机运行(~~使证书导入到 iPhone~~)。
@@ -76,11 +78,10 @@
 ### 依赖
 * [insert_dylib](https://github.com/gengjf/insert_dylib)(~~已在./Others/~~)
 * [ios-app-signer](https://github.com/DanTheMan827/ios-app-signer) (~~文件太大，请自行下载编译~~)
+* [theos](https://github.com/theos/theos)
+
 
 ---
 
 ### 免责声明
 本项目旨在学习 iOS 逆向的一点实践，不可使用于商业和个人其他意图。若使用不当，均由个人承担。
-
-
-
