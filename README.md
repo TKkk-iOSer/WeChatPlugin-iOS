@@ -27,6 +27,7 @@
 ### 截图
 
 设置界面：
+
 ![picture-1.jpeg](http://upload-images.jianshu.io/upload_images/965383-aa19103e8a777015.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ![picture-2.jpeg](http://upload-images.jianshu.io/upload_images/965383-1586d59cdd7f5b37.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
@@ -41,8 +42,8 @@
 
 * [ios-app-signer](https://github.com/DanTheMan827/ios-app-signer)  (重签名)
 * Xcode 或者 PP助手 (安装ipa)
-* iOS 证书(~~可用Xcode生成临时证书，然而只能用7天~~)
-* ipa文件(~~可直接下载下面百度云的app文件，如果重新注入动态库，请于PP助手下载**越狱版**的微信~~)
+* iOS 证书(可用Xcode生成临时开发证书，然而只能用7天)
+* ipa文件(可直接下载下面百度云的app文件，如果重新注入动态库，请于PP助手下载**越狱版**的微信)
 
 #### 1. 生成临时证书(~~若有证书忽略该步骤~~)
 使用 Xcode 创建一个 iOS 的 Project，选择方框1 的开发者，并用真机运行(~~使证书导入到 iPhone~~)。
