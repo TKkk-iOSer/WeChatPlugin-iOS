@@ -28,8 +28,7 @@
 
 设置界面：
 
-<img src="./Others/ScreenShots/Setting-01.jpg" height="500" hspace="30">
-<img src="./Others/ScreenShots/Setting-02.jpg" height="500" hspace="30">
+<img src="./Others/ScreenShots/Setting-01.jpg" height="500" hspace="20" style="display: inline-block"> <img src="./Others/ScreenShots/Setting-02.jpg" height="500" hspace="20" style="display: inline-block">
 
 
 ---
