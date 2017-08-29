@@ -313,13 +313,15 @@
 
 - (void)settingAutoReplyKeyword {
     NSString *autoReplyKeyword = [[TKRobotConfig sharedConfig] autoReplyKeyword];
-    [self alertControllerWithTitle:@"个人消息自动回复"
-                           content:autoReplyKeyword
-                       placeholder:@"请输入消息关键字"
-                               blk:^(UITextField *textField) {
-                                   [[TKRobotConfig sharedConfig] setAutoReplyKeyword:textField.text];
-                                   [self reloadTableData];
-                               }];
+    TKEditViewController *editViewController = [[TKEditViewController alloc] init];
+    [editViewController setEndEditing:^(NSString *text) {
+        [[TKRobotConfig sharedConfig] setAutoReplyKeyword:text];
+        [self reloadTableData];
+    }];
+    editViewController.title = @"个人消息自动回复";
+    editViewController.text = autoReplyKeyword;
+    editViewController.placeholder = @"请输入关键字（ ‘*’ 为任何消息都回复，\n‘||’ 为匹配多个关键字）";
+    [self.navigationController PushViewController:editViewController animated:YES];                                                  
 }
 
 - (void)settingAutoReply {
@@ -340,13 +342,15 @@
 
 - (void)settingAutoReplyChatRoomKeyword {
     NSString *autoReplyChatRoomKeyword = [[TKRobotConfig sharedConfig] autoReplyChatRoomKeyword];
-    [self alertControllerWithTitle:@"群消息自动回复"
-                           content:autoReplyChatRoomKeyword
-                       placeholder:@"请输入消息关键字"
-                               blk:^(UITextField *textField) {
-                                   [[TKRobotConfig sharedConfig] setAutoReplyChatRoomKeyword:textField.text];
-                                   [self reloadTableData];
-                               }];
+    TKEditViewController *editViewController = [[TKEditViewController alloc] init];
+    [editViewController setEndEditing:^(NSString *text) {
+        [[TKRobotConfig sharedConfig] setAutoReplyChatRoomKeyword:text];
+        [self reloadTableData];
+    }];
+    editViewController.title = @"群消息自动回复";
+    editViewController.text = autoReplyChatRoomKeyword;
+    editViewController.placeholder = @"请输入关键字（ ‘*’ 为任何消息都回复，\n‘||’ 为匹配多个关键字）";
+    [self.navigationController PushViewController:editViewController animated:YES];                                                  
 }
 
 - (void)settingAutoReplyChatRoom {
