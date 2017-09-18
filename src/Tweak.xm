@@ -16,6 +16,10 @@
         CContactMgr *contactMgr = [[objc_getClass("MMServiceCenter") defaultCenter] getService:objc_getClass("CContactMgr")];
         CContact *contact = [contactMgr getContactByName:wrap.m_nsFromUsr];
         if(wrap.m_uiMessageType == 1) {                                         // 收到文本消息
+            if (contact.m_uiFriendScene == 0 && ![contact isChatroom]) {
+                //        该消息为公众号
+                return;
+            }
             if (![contact isChatroom]) {                                        // 是否为群聊
                 [self autoReplyWithMessageWrap:wrap];                           // 自动回复个人消息
             } else {
@@ -28,9 +32,7 @@
                 [self welcomeJoinChatRoomWithMessageWrap:wrap];
             }
         }
-    }
-
-    if (arg1 == 332) {                                                          // 收到添加好友消息
+    } else if (arg1 == 332) {                                                          // 收到添加好友消息
         [self addAutoVerifyWithMessageInfo:info];
     }
 }

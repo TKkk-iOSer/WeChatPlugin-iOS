@@ -14,6 +14,7 @@ dylib_path="${temp_dir}/${DYLIB##*/}"
 
 framework_path="${app_bundle_path}/${framework_name}.framework"
 rm -rf ${shell_path}/../Products/*
+mkdir ${shell_path}/../Products/
 if [ ! -d ${temp_dir} ]; then
 	# echo "创建 ${temp_dir}"
 	mkdir ${temp_dir}
