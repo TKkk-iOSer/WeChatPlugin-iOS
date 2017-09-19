@@ -72,6 +72,10 @@
 
 ![Device.png](http://upload-images.jianshu.io/upload_images/965383-abb8cf54a6acabbe.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
+#### 5. iOS权限设置
+
+打开`设置-通用-描述文件与设备管理`，信任证列表中的开发者应用。
+
 ---
 
 ### 依赖
