@@ -52,7 +52,9 @@
 
 #### 2. 生成注入的app文件
 
-* 可直接通过百度云下载，链接: https://pan.baidu.com/s/1c120oww 密码: 95bx（微信版本为6.5.16）
+* 可直接通过百度云下载   
+链接: https://pan.baidu.com/s/1c120oww 密码: 95bx（微信版本为6.5.16）   
+链接: https://pan.baidu.com/s/1bL1oei 密码: grbi (微信版本 6.5.17)   
 
 * 若想修改源码，生成新的dylib，可在修改之后执行`make`,之后拷贝生成的dylib(~~路径为`./theos/obj/debug/robot.dylib`~~),最后执行 `./Others/autoInsertDylib.sh ipa文件路径 dylib文件路径` 即可获得注入dylib的app文件。
 
