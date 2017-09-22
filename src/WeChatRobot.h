@@ -29,6 +29,9 @@ typedef NS_ENUM(NSUInteger, TKArrayTpye) {
 #pragma mark - MODEL
 
 @interface CMessageWrap : NSObject
+@property(nonatomic, assign) unsigned long m_uiGameType;  // 1、猜拳; 2、骰子; 0、自定义表情
+@property(nonatomic, assign) unsigned long m_uiGameContent;
+@property(nonatomic, strong) NSString *m_nsEmoticonMD5;
 @property(nonatomic) long long m_n64MesSvrID;
 @property (nonatomic, copy) NSString *m_nsContent;                      // 内容
 @property (nonatomic, copy) NSString *m_nsToUsr;                        // 接收的用户(微信id)
@@ -258,4 +261,8 @@ typedef NS_ENUM(NSUInteger, TKArrayTpye) {
 
 @interface UINavigationController (LogicController)
 - (void)PushViewController:(id)arg1 animated:(BOOL)arg2;
+@end
+
+@interface GameController : NSObject
++ (NSString*)getMD5ByGameContent:(NSInteger) content;
 @end

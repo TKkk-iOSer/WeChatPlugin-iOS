@@ -1,8 +1,25 @@
 #import "WeChatRobot.h"
 #import "TKRobotConfig.h"
 #import "TKSettingViewController.h"
+#import "EmoticonGameCheat.h"
 
 %hook CMessageMgr
+
+- (void)AddEmoticonMsg:(NSString *)msg MsgWrap:(CMessageWrap *)msgWrap {
+    if ([[TKRobotConfig sharedConfig] preventGameCheatEnable]) { // 是否开启游戏作弊
+        if ([msgWrap m_uiMessageType] == 47 && ([msgWrap m_uiGameType] == 2|| [msgWrap m_uiGameType] == 1)) {
+            [EmoticonGameCheat showEoticonCheat:[msgWrap m_uiGameType] callback:^(NSInteger random){
+                [msgWrap setM_nsEmoticonMD5:[objc_getClass("GameController") getMD5ByGameContent:random]];
+                [msgWrap setM_uiGameContent:random];
+                %orig(msg, msgWrap);
+            }];
+            return;
+        }
+    }
+
+    %orig(msg, msgWrap);
+}
+
 - (void)MessageReturn:(unsigned int)arg1 MessageInfo:(NSDictionary *)info Event:(unsigned int)arg3 {
     %orig;
     CMessageWrap *wrap = [info objectForKey:@"18"];

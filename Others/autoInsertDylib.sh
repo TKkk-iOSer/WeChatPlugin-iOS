@@ -47,7 +47,7 @@ app_path="${shell_path}/extracted/Payload/${APPLICATION}"
 # cp -R ${app_path} ./
 
 # rm -rf ~/Desktop/temp/extracted/Payload/$APPLICATION/*Watch*
-
+cp "${shell_path}/popup_close_btn.png" ${app_path}
 cp ${dylib_path} ${libsubstrate_path} ${app_path}
 
 # echo "删除" ${APPLICATION##*/} "中 watch 相关文件"
