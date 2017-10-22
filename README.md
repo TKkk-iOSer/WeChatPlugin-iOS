@@ -1,9 +1,12 @@
 ## WeChatPlugin-iOS
 
-微信小助手-iOS版 v1.0.0  
+微信小助手-iOS版 v1.0.0
 
-<img src="./Others/ScreenShots/WeChatPlugin.jpg" width="500">
+> 增加了游戏（石头剪刀布、骰子）作弊功能
 
+使用 [zhPopupController](https://github.com/snail-z/zhPopupController) 来显示作弊内容，并使用 `zhPopupController` 的 Example 模板
+
+<img src="./Others/ScreenShots/WeChatPlugin.jpg" width="500"> <img src="./Others/ScreenShots/Setting-cheat.jpg" width="500">
 
 **mac OS 版请戳→_→ [WeChatPlugin-MacOS](https://github.com/TKkk-iOSer/WeChatPlugin-MacOS)**
 
@@ -19,6 +22,7 @@
 - [x] 敏感词自动踢人
 - [x] 入群欢迎语
 - [x] 群消息自动回复
+- [x] 游戏作弊（石头剪刀布、骰子）
 
 **统一设置群公告、敏感词自动踢人、入群欢迎语 仅对自己创建的群有效**
 
@@ -52,9 +56,9 @@
 
 #### 2. 生成注入的app文件
 
-* 可直接通过百度云下载   
-链接: https://pan.baidu.com/s/1c120oww 密码: 95bx（微信版本为6.5.16）   
-链接: https://pan.baidu.com/s/1bL1oei 密码: grbi (微信版本 6.5.17)   
+* 可直接通过百度云下载
+链接: https://pan.baidu.com/s/1c120oww 密码: 95bx（微信版本为6.5.16）
+链接: https://pan.baidu.com/s/1bL1oei 密码: grbi (微信版本 6.5.17)
 
 * 若想修改源码，生成新的dylib，可在修改之后执行`make`,之后拷贝生成的dylib(~~路径为`./theos/obj/debug/robot.dylib`~~),最后执行 `./Others/autoInsertDylib.sh ipa文件路径 dylib文件路径` 即可获得注入dylib的app文件。
 
@@ -95,5 +99,5 @@
 ---
 
 #### 听说你想请我喝下午茶？😏
- 
+
 <img src="http://upload-images.jianshu.io/upload_images/965383-8e2af8fe607eee62.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1024" height="300" hspace="7" style="display: inline-block">

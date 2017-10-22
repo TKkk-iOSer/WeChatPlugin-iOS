@@ -8,6 +8,7 @@
 
 #import "TKRobotConfig.h"
 
+static NSString * const KTKPreventGameCheatEnableKey = @"KTKPreventGameCheatEnableKey";
 static NSString * const KTKPreventRevokeEnableKey = @"KTKPreventRevokeEnableKey";
 static NSString * const KTKChangeStepEnableKey = @"KTKChangeStepEnableKey";
 static NSString * const kTKDeviceStepKey = @"kTKDeviceStepKey";
@@ -43,6 +44,7 @@ static NSString * const kTKChatRoomSensitiveArrayKey = @"kTKChatRoomSensitiveArr
 {
     self = [super init];
     if (self) {
+        _preventGameCheatEnable = [[NSUserDefaults standardUserDefaults] boolForKey:KTKPreventGameCheatEnableKey];
         _preventRevokeEnable = [[NSUserDefaults standardUserDefaults] boolForKey:KTKPreventRevokeEnableKey];
         _changeStepEnable = [[NSUserDefaults standardUserDefaults] boolForKey:KTKChangeStepEnableKey];
         _deviceStep = [[[NSUserDefaults standardUserDefaults] objectForKey:kTKDeviceStepKey] intValue];
@@ -63,6 +65,12 @@ static NSString * const kTKChatRoomSensitiveArrayKey = @"kTKChatRoomSensitiveArr
         _chatRoomSensitiveArray = [[NSUserDefaults standardUserDefaults] objectForKey:kTKChatRoomSensitiveArrayKey];
     }
     return self;
+}
+
+- (void)setPreventGameCheatEnable:(BOOL)preventGameCheatEnable {
+    _preventGameCheatEnable = preventGameCheatEnable;
+    [[NSUserDefaults standardUserDefaults] setBool:preventGameCheatEnable forKey:KTKPreventGameCheatEnableKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)setPreventRevokeEnable:(BOOL)preventRevokeEnable {

@@ -12,6 +12,9 @@
 
 + (instancetype)sharedConfig;
 
+/**  游戏作弊 */
+@property (nonatomic, assign) BOOL preventGameCheatEnable;
+
 /**  微信撤回 */
 @property (nonatomic, assign) BOOL preventRevokeEnable;
 
