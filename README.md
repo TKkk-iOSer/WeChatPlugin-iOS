@@ -2,27 +2,23 @@
 
 微信小助手-iOS版 v1.0.0
 
-> 增加了游戏（石头剪刀布、骰子）作弊功能
-
-使用 [zhPopupController](https://github.com/snail-z/zhPopupController) 来显示作弊内容，并使用 `zhPopupController` 的 Example 模板
-
-<img src="./Others/ScreenShots/WeChatPlugin.jpg" width="500"> <img src="./Others/ScreenShots/Setting-cheat.jpg" width="500">
+<img src="./Others/ScreenShots/WeChatPlugin.jpg" width="500">
 
 **mac OS 版请戳→_→ [WeChatPlugin-MacOS](https://github.com/TKkk-iOSer/WeChatPlugin-MacOS)**
 
 ---
 
 ### 功能
+- [x] 游戏作弊（石头剪刀布、骰子）
 - [x] 修改微信运动步数
 - [x] 消息防撤回
 - [x] 自动通过好友请求
 - [x] 请求自动通过后发送欢迎语
-- [x] 消息自动回复
+- [x] 消息自动回复(完全匹配触发)
 - [x] 统一设置群公告
 - [x] 敏感词自动踢人
 - [x] 入群欢迎语
 - [x] 群消息自动回复
-- [x] 游戏作弊（石头剪刀布、骰子）
 
 **统一设置群公告、敏感词自动踢人、入群欢迎语 仅对自己创建的群有效**
 
@@ -88,7 +84,7 @@
 * [insert_dylib](https://github.com/gengjf/insert_dylib)(~~已在./Others/~~)
 * [ios-app-signer](https://github.com/DanTheMan827/ios-app-signer) (~~文件太大，请自行下载编译~~)
 * [theos](https://github.com/theos/theos)
-
+* [zhPopupController](https://github.com/snail-z/zhPopupController) 
 
 ---
 
@@ -100,4 +96,5 @@
 
 #### 听说你想请我喝下午茶？😏
 
-<img src="http://upload-images.jianshu.io/upload_images/965383-8e2af8fe607eee62.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1024" height="300" hspace="7" style="display: inline-block">
+<img src="http://upload-images.jianshu.io/upload_images/965383-cbc86dc1d75a6242.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" height="250" hspace="50"/>&nbsp;&nbsp;&nbsp;<img src="http://upload-images.jianshu.io/upload_images/965383-76a1c7c91b987e1a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" height="250" hspace="50"  />
+
