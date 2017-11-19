@@ -28,7 +28,7 @@
             winSize.size.height -= 88;
             winSize.origin.y = 88;
         }
-        _tableViewInfo = [[objc_getClass("MMTableViewInfo") alloc] initWithFrame:[UIScreen mainScreen].bounds style:UITableViewStyleGrouped];
+        _tableViewInfo = [[objc_getClass("MMTableViewInfo") alloc] initWithFrame:winSize style:UITableViewStyleGrouped];
     }
     return self;
 }
