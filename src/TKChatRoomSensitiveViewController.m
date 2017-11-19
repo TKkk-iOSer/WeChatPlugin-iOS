@@ -20,6 +20,7 @@
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
+        // 增加对iPhone X的屏幕适配
         CGRect winSize = [UIScreen mainScreen].bounds;
         if (winSize.size.height == 812) {
             winSize.size.height -= 88;
