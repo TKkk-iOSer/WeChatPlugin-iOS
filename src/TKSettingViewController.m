@@ -22,7 +22,13 @@
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     if (self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil]) {
-        _tableViewInfo = [[objc_getClass("MMTableViewInfo") alloc] initWithFrame:[UIScreen mainScreen].bounds style:UITableViewStyleGrouped];
+        // 增加对iPhone X的屏幕适配
+        CGRect winSize = [UIScreen mainScreen].bounds;
+        if (winSize.size.height == 812) { // iPhone X 高为812
+            winSize.size.height -= 88;
+            winSize.origin.y = 88;
+        }
+        _tableViewInfo = [[objc_getClass("MMTableViewInfo") alloc] initWithFrame:winSize style:UITableViewStyleGrouped];
     }
     return self;
 }
