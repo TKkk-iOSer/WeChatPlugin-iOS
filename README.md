@@ -28,14 +28,14 @@
 
 设置界面：
 
-<img src="./Others/ScreenShots/Setting-01.jpg" height="500" hspace="20" style="display: inline-block"> <img src="./Others/ScreenShots/Setting-02.jpg" height="500" hspace="20" style="display: inline-block">
+<img src="./Others/ScreenShots/Setting-03.jpg" height="500" hspace="20" style="display: inline-block"> <img src="./Others/ScreenShots/Setting-02.jpg" height="500" hspace="20" style="display: inline-block">
 
 
 ---
 
 ### 安装
 
-~~详细安装方法可参考[iOS 逆向 - 微信 helloWorld](http://www.jianshu.com/p/04495a429324)~~
+~~详细安装方法可参考[iOS 逆向 - 微信 helloWorld](http://www.tkkk.fun/2017/03/19/%E9%80%86%E5%90%91-%E5%BE%AE%E4%BF%A1helloWorld/)~~
 
 #### 0. 准备
 
@@ -53,8 +53,7 @@
 #### 2. 生成注入的app文件
 
 * 可直接通过百度云下载
-链接: https://pan.baidu.com/s/1c120oww 密码: 95bx（微信版本为6.5.16）
-链接: https://pan.baidu.com/s/1bL1oei 密码: grbi (微信版本 6.5.17)
+链接: https://pan.baidu.com/s/1o7UBqL8 密码: f71u (微信版本 6.6.0)
 
 * 若想修改源码，生成新的dylib，可在修改之后执行`make`,之后拷贝生成的dylib(~~路径为`./theos/obj/debug/robot.dylib`~~),最后执行 `./Others/autoInsertDylib.sh ipa文件路径 dylib文件路径` 即可获得注入dylib的app文件。
 

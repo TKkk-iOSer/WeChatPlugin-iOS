@@ -39,16 +39,16 @@ static void *zhPopupControllerNSTimerKey = &zhPopupControllerNSTimerKey;
         _maskType = maskType;
         _layoutType = zhPopupLayoutTypeCenter;
         _dismissOnMaskTouched = YES;
-        
+
         // setter
         self.maskAlpha = 0.5f;
         self.slideStyle = zhPopupSlideStyleFade;
         self.dismissOppositeDirection = NO;
         self.allowPan = NO;
-    
+
         // superview
         _superview = [self frontWindow];
-        
+
         // maskView
         if (maskType == zhPopupMaskTypeBlackBlur || maskType == zhPopupMaskTypeWhiteBlur) {
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_8_0
@@ -92,20 +92,20 @@ static void *zhPopupControllerNSTimerKey = &zhPopupControllerNSTimerKey;
                 _maskView.backgroundColor = [UIColor colorWithWhite:0.0 alpha:_maskAlpha];
                 break;
         }
-        
+
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                               action:@selector(handleTap:)];
         tap.delegate = self;
         [_maskView addGestureRecognizer:tap];
-        
+
         // popupView
         _popupView = [[UIView alloc] init];
         _popupView.backgroundColor = [UIColor clearColor];
-        
+
         // addSubview
         [_maskView addSubview:_popupView];
         [_superview addSubview:_maskView];
-        
+
         // Observer statusBar orientation changes.
         [self bindNotificationEvent];
     }
@@ -165,13 +165,13 @@ static void *zhPopupControllerNSTimerKey = &zhPopupControllerNSTimerKey;
             springAnimated:(BOOL)isSpringAnimated
                     inView:(UIView *)sView
                displayTime:(NSTimeInterval)displayTime {
- 
+
     if (self.isPresenting) return;
     NSMutableDictionary *parameters = [NSMutableDictionary dictionaryWithCapacity:2];
     [parameters setValue:@(duration) forKey:@"zh_duration"];
     [parameters setValue:@(isSpringAnimated) forKey:@"zh_springAnimated"];
     objc_setAssociatedObject(self, zhPopupControllerParametersKey, parameters, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    
+
     if (nil != self.willPresent) {
         self.willPresent(self);
     } else {
@@ -179,7 +179,7 @@ static void *zhPopupControllerNSTimerKey = &zhPopupControllerNSTimerKey;
             [self.delegate popupControllerWillPresent:self];
         }
     }
-    
+
     if (nil != sView) {
         _superview = sView;
         _maskView.frame = _superview.frame;
@@ -188,12 +188,12 @@ static void *zhPopupControllerNSTimerKey = &zhPopupControllerNSTimerKey;
     if (![_superview.subviews containsObject:_maskView]) {
         [_superview addSubview:_maskView];
     }
-    
+
     [self prepareDropAnimated];
     [self prepareBackground];
     _popupView.userInteractionEnabled = NO;
     _popupView.center = [self prepareCenter];
-    
+
     void (^presentCompletion)(void) = ^() {
         _isPresenting = YES;
         _popupView.userInteractionEnabled = YES;
@@ -204,37 +204,37 @@ static void *zhPopupControllerNSTimerKey = &zhPopupControllerNSTimerKey;
                 [self.delegate popupControllerDidPresent:self];
             }
         }
-        
+
         if (displayTime) {
             NSTimer *timer = [NSTimer timerWithTimeInterval:displayTime target:self selector:@selector(dismiss) userInfo:nil repeats:NO];
             [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
             objc_setAssociatedObject(self, zhPopupControllerNSTimerKey, timer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         }
     };
-    
+
     if (isSpringAnimated) {
         [UIView animateWithDuration:duration delay:0.f usingSpringWithDamping:0.6 initialSpringVelocity:0.2 options:UIViewAnimationOptionCurveLinear animations:^{
-            
+
             [self finishedDropAnimated];
             [self finishedBackground];
             _popupView.center = [self finishedCenter];
-            
+
         } completion:^(BOOL finished) {
-            
+
             if (finished) presentCompletion();
-            
+
         }];
     } else {
         [UIView animateWithDuration:duration delay:0.f options:UIViewAnimationOptionCurveLinear animations:^{
-            
+
             [self finishedDropAnimated];
             [self finishedBackground];
             _popupView.center = [self finishedCenter];
-            
+
         } completion:^(BOOL finished) {
-            
+
             if (finished) presentCompletion();
-            
+
         }];
     }
 }
@@ -256,9 +256,9 @@ static void *zhPopupControllerNSTimerKey = &zhPopupControllerNSTimerKey;
 
 - (void)dismissWithDuration:(NSTimeInterval)duration springAnimated:(BOOL)isSpringAnimated {
     [self destroyTimer];
-    
+
     if (!self.isPresenting) return;
-    
+
     if (nil != self.willDismiss) {
         self.willDismiss(self);
     } else {
@@ -266,7 +266,7 @@ static void *zhPopupControllerNSTimerKey = &zhPopupControllerNSTimerKey;
             [self.delegate popupControllerWillDismiss:self];
         }
     }
-    
+
     void (^dismissCompletion)(void) = ^() {
         [self removeSubviews];
         _isPresenting = NO;
@@ -279,39 +279,39 @@ static void *zhPopupControllerNSTimerKey = &zhPopupControllerNSTimerKey;
             }
         }
     };
-    
+
     UIViewAnimationOptions (^animOpts)(zhPopupSlideStyle) = ^(zhPopupSlideStyle slide){
         if (slide != zhPopupSlideStyleShrinkInOut) {
             return UIViewAnimationOptionCurveLinear;
         }
         return UIViewAnimationOptionCurveEaseInOut;
     };
-    
+
     if (isSpringAnimated) {
         duration *= 0.75;
         NSTimeInterval duration1 = duration * 0.25, duration2 = duration - duration1;
-        
+
         [UIView animateWithDuration:duration1 delay:0.f options:UIViewAnimationOptionCurveEaseInOut animations:^{
-            
+
             [self bufferBackground];
             _popupView.center = [self bufferCenter:30];
-            
+
         } completion:^(BOOL finished) {
             [UIView animateWithDuration:duration2 delay:0.f options:animOpts(self.slideStyle) animations:^{
-                
+
                 [self dismissedDropAnimated];
                 [self dismissedBackground];
                 _popupView.center = [self dismissedCenter];
-                
+
             } completion:^(BOOL finished) {
                 if (finished) dismissCompletion();
             }];
-            
+
         }];
-        
+
     } else {
         [UIView animateWithDuration:duration delay:0.f options:animOpts(self.slideStyle) animations:^{
-            
+
             [self dismissedDropAnimated];
             [self dismissedBackground];
             _popupView.center = [self dismissedCenter];
@@ -521,34 +521,34 @@ static CGFloat zh_randomValue(int i, int j) {
                         _maskView.bounds.size.height + _popupView.bounds.size.height / 2) :
             CGPointMake(_popupView.center.x,
                         -_popupView.bounds.size.height / 2);
-            
+
         case zhPopupSlideStyleFromBottom:
             return _dismissOppositeDirection ?
             CGPointMake(_popupView.center.x,
                         -_popupView.bounds.size.height / 2) :
             CGPointMake(_popupView.center.x,
                         _maskView.bounds.size.height + _popupView.bounds.size.height / 2);
-            
+
         case zhPopupSlideStyleFromLeft:
             return _dismissOppositeDirection ?
             CGPointMake(_maskView.bounds.size.width + _popupView.bounds.size.width / 2,
                         _popupView.center.y) :
             CGPointMake(-_popupView.bounds.size.width / 2,
                         _popupView.center.y);
-            
+
         case zhPopupSlideStyleFromRight:
             return _dismissOppositeDirection ?
             CGPointMake(-_popupView.bounds.size.width / 2,
                         _popupView.center.y) :
             CGPointMake(_maskView.bounds.size.width + _popupView.bounds.size.width / 2,
                         _popupView.center.y);
-            
+
         case zhPopupSlideStyleShrinkInOut:
             _popupView.transform = _dismissOppositeDirection ?
             CGAffineTransformMakeScale(1.95, 1.95) :
             CGAffineTransformMakeScale(0.05, 0.05);
             break;
-            
+
         case zhPopupSlideStyleFade:
             _maskView.alpha = 0;
         default: break;
@@ -619,7 +619,7 @@ static CGFloat zh_randomValue(int i, int j) {
         BOOL windowIsVisible = !window.hidden && window.alpha > 0;
         BOOL windowLevelSupported = (window.windowLevel >= UIWindowLevelNormal && window.windowLevel <= UIWindowLevelNormal);
         BOOL windowKeyWindow = window.isKeyWindow;
-        
+
         if(windowOnMainScreen && windowIsVisible && windowLevelSupported && windowKeyWindow) {
             return window;
         }
@@ -632,18 +632,18 @@ static CGFloat zh_randomValue(int i, int j) {
 
 - (void)bindNotificationEvent {
     [self unbindNotificationEvent];
-    
+
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(willChangeStatusBarOrientation)
                                                  name:UIApplicationWillChangeStatusBarOrientationNotification
                                                object:nil];
-    
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(didChangeStatusBarOrientation)
                                                  name:UIApplicationDidChangeStatusBarOrientationNotification
                                                object:nil];
-    
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillChangeFrame:)
                                                  name:UIKeyboardWillChangeFrameNotification
@@ -652,15 +652,15 @@ static CGFloat zh_randomValue(int i, int j) {
 
 - (void)unbindNotificationEvent {
     [[UIDevice currentDevice] endGeneratingDeviceOrientationNotifications];
-    
+
     [[NSNotificationCenter defaultCenter]removeObserver:self
                                                    name:UIApplicationWillChangeStatusBarOrientationNotification
                                                  object:nil];
-    
+
     [[NSNotificationCenter defaultCenter]removeObserver:self
                                                    name:UIApplicationDidChangeStatusBarOrientationNotification
                                                  object:nil];
-    
+
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIKeyboardWillChangeFrameNotification
                                                   object:nil];
@@ -669,24 +669,24 @@ static CGFloat zh_randomValue(int i, int j) {
 #pragma mark - Observing
 
 - (void)keyboardWillChangeFrame:(NSNotification*)notification {
-    
+
     _allowPan = NO; // The pan gesture will be invalid when the keyboard appears.
-    
+
     NSDictionary *userInfo = notification.userInfo;
     CGRect keyboardRect = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     keyboardRect = [_maskView convertRect:keyboardRect fromView:nil];
     CGFloat keyboardHeight = CGRectGetHeight(_maskView.bounds) - CGRectGetMinY(keyboardRect);
-    
+
     UIViewAnimationCurve curve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
     UIViewAnimationOptions options = curve << 16;
-    
+
     NSTimeInterval duration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
 
     [UIView animateWithDuration:duration delay:0 options:options animations:^{
         if (keyboardHeight > 0) {
-            
+
             CGFloat offsetSpacing = self.offsetSpacingOfKeyboard, changeHeight = 0;
-            
+
             switch (_layoutType) {
                 case zhPopupLayoutTypeTop:
                     break;
@@ -697,13 +697,13 @@ static CGFloat zh_randomValue(int i, int j) {
                     changeHeight = (keyboardHeight / 2) + offsetSpacing;
                     break;
             }
-            
+
             if (!CGPointEqualToPoint(CGPointZero, _markerCenter)) {
                 _popupView.center = CGPointMake(_markerCenter.x, _markerCenter.y - changeHeight);
             } else {
                 _popupView.center = CGPointMake(_popupView.center.x, _popupView.center.y - changeHeight);
             }
-            
+
         } else {
             if (self.isPresenting) {
                 _popupView.center = [self finishedCenter];
@@ -778,7 +778,7 @@ static CGFloat zh_randomValue(int i, int j) {
         case UIGestureRecognizerStateChanged: {
             switch (_layoutType) {
                 case zhPopupLayoutTypeCenter: {
-                    
+
                     BOOL isTransformationVertical = NO;
                     switch (_slideStyle) {
                         case zhPopupSlideStyleFromLeft:
@@ -787,7 +787,7 @@ static CGFloat zh_randomValue(int i, int j) {
                             isTransformationVertical = YES;
                             break;
                     }
-                    
+
                     NSInteger factor = 4; // set screen ratio `_maskView.bounds.size.height / factor`
                     CGFloat changeValue;
                     if (isTransformationVertical) {
@@ -801,7 +801,7 @@ static CGFloat zh_randomValue(int i, int j) {
                     [UIView animateWithDuration:0.15 animations:^{
                         _maskView.alpha = alpha;
                     } completion:NULL];
-                    
+
                 } break;
                 case zhPopupLayoutTypeBottom: {
                     if (g.view.frame.origin.y + translation.y > _maskView.bounds.size.height - g.view.bounds.size.height) {
@@ -828,7 +828,7 @@ static CGFloat zh_randomValue(int i, int j) {
             [g setTranslation:CGPointZero inView:_maskView];
         } break;
         case UIGestureRecognizerStateEnded: {
-            
+
             BOOL isWillDismiss = YES, isStyleCentered = NO;
             switch (_layoutType) {
                 case zhPopupLayoutTypeCenter: {
@@ -888,9 +888,9 @@ static CGFloat zh_randomValue(int i, int j) {
                         default: break;
                     }
                 }
-                
+
                 [self dismissWithDuration:0.25f springAnimated:NO];
-                
+
             } else {
                 // restore view location.
                 id object = objc_getAssociatedObject(self, zhPopupControllerParametersKey);
@@ -914,7 +914,7 @@ static CGFloat zh_randomValue(int i, int j) {
                     } completion:NULL];
                 }
             }
-            
+
         } break;
         case UIGestureRecognizerStateCancelled:
             break;
@@ -923,6 +923,7 @@ static CGFloat zh_randomValue(int i, int j) {
 }
 
 - (void)dealloc {
+  [super dealloc];
     [self unbindNotificationEvent];
     [self removeSubviews];
 }
