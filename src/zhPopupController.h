@@ -42,7 +42,7 @@ typedef NS_ENUM(NSInteger, zhPopupSlideStyle) {
 
 @interface zhPopupController : NSObject
 
-@property (nonatomic, weak) id <zhPopupControllerDelegate> _Nullable delegate;
+@property (nonatomic, strong) id <zhPopupControllerDelegate> delegate;
 
 /// Convenient to initialize and set maske type. (Through the `- init` initialization, maskType is zhPopupMaskTypeBlackTranslucent)
 + (instancetype)popupControllerWithMaskType:(zhPopupMaskType)maskType;
@@ -63,7 +63,7 @@ typedef NS_ENUM(NSInteger, zhPopupSlideStyle) {
 @property (nonatomic, assign) CGFloat maskAlpha; // When set maskType is zhPopupMaskTypeBlackTranslucent vaild.
 
 /// default is YES. if NO, Mask view will not respond to events.
-@property (nonatomic, assign) BOOL dismissOnMaskTouched; 
+@property (nonatomic, assign) BOOL dismissOnMaskTouched;
 
 /// default is NO. if YES, Popup view disappear from the opposite direction.
 @property (nonatomic, assign) BOOL dismissOppositeDirection; // When `layoutType = zhPopupLayoutTypeCenter` is vaild.

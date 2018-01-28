@@ -9,8 +9,6 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = robot
 robot_FILES =  $(wildcard src/*.m) src/Tweak.xm
-robot_CFLAGS = -fobjc-arc
-robot_OBJCFLAGS = -Wno-error
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 

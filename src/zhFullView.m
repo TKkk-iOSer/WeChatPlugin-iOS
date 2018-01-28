@@ -117,12 +117,12 @@
             }
         }
     }];
-
+    _models = models;
     [self startAnimationsCompletion:NULL];
 }
 
 - (void)fullViewClicked:(UITapGestureRecognizer *)recognizer {
-    __weak zhFullView *_self = self;
+    zhFullView *_self = self;
     [self endAnimationsCompletion:^(zhFullView *fullView) {
         if (nil != self.didClickFullView) {
             _self.didClickFullView((zhFullView *)recognizer.view);
@@ -193,4 +193,3 @@
 }
 
 @end
-
