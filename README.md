@@ -2,6 +2,10 @@
 
 微信小助手-iOS版 v1.0.0
 
+**年底了，微信加强了检测，如有弹窗警告的，请暂停使用**  
+**年底了，微信加强了检测，如有弹窗警告的，请暂停使用**  
+**年底了，微信加强了检测，如有弹窗警告的，请暂停使用(重要的事说三遍)**
+
 <img src="./Others/ScreenShots/WeChatPlugin.jpg" width="500">
 
 **mac OS 版请戳→_→ [WeChatPlugin-MacOS](https://github.com/TKkk-iOSer/WeChatPlugin-MacOS)**
