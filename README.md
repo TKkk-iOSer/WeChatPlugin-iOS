@@ -2,9 +2,7 @@
 
 微信小助手-iOS版 v1.0.0
 
-**年底了，微信加强了检测，如有弹窗警告的，请暂停使用**  
-**年底了，微信加强了检测，如有弹窗警告的，请暂停使用**  
-**年底了，微信加强了检测，如有弹窗警告的，请暂停使用(重要的事说三遍)**
+**该项目不再更新**
 
 <img src="./Others/ScreenShots/WeChatPlugin.jpg" width="500">
 
@@ -13,7 +11,6 @@
 ---
 
 ### 功能
-- [x] 游戏作弊（石头剪刀布、骰子）
 - [x] 修改微信运动步数
 - [x] 消息防撤回
 - [x] 自动通过好友请求
@@ -28,18 +25,11 @@
 
 ---
 
-### 截图
-
-设置界面：
-
-<img src="./Others/ScreenShots/Setting-03.png" height="500" hspace="20" style="display: inline-block"> <img src="./Others/ScreenShots/Setting-02.jpg" height="500" hspace="20" style="display: inline-block">
-
-
----
-
 ### 安装
 
 ~~详细安装方法可参考[iOS 逆向 - 微信 helloWorld](http://www.tkkk.fun/2017/03/19/%E9%80%86%E5%90%91-%E5%BE%AE%E4%BF%A1helloWorld/)~~
+
+使用 [MonkeyDev](https://github.com/AloneMonkey/MonkeyDev) 效果更佳，这工具一级棒
 
 #### 0. 准备
 
@@ -55,12 +45,6 @@
 ![Xcode.png](http://upload-images.jianshu.io/upload_images/965383-e730b53fe95ab166.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 #### 2. 生成注入的app文件
-
-* 可直接通过百度云下载
-
-链接: https://pan.baidu.com/s/1o7UBqL8 密码: f71u (微信版本 6.6.0 新版自动回复失效)
-
-链接: https://pan.baidu.com/s/1c120oww 密码: 95bx（微信版本为6.5.16 无作弊功能）
 
 * 若想修改源码，生成新的dylib，可在修改之后执行`make`,之后拷贝生成的dylib(~~路径为`./theos/obj/debug/robot.dylib`~~),最后执行 `./Others/autoInsertDylib.sh ipa文件路径 dylib文件路径` 即可获得注入dylib的app文件。
 
@@ -95,7 +79,7 @@
 ---
 
 ### 免责声明
-本项目旨在学习 iOS 逆向的一点实践，不可使用于商业和个人其他意图。若使用不当，均由个人承担。
+本项目旨在学习 iOS 逆向的一点实践，不可使用于商业和个人其他意图。若使用不当，均由个人承担。如有侵权，请联系本人删除。
 
 
 ---
