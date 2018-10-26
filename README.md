@@ -4,26 +4,7 @@
 
 **该项目不再更新**
 
-<img src="./Others/ScreenShots/WeChatPlugin.jpg" width="500">
-
 **mac OS 版请戳→_→ [WeChatPlugin-MacOS](https://github.com/TKkk-iOSer/WeChatPlugin-MacOS)**
-
----
-
-### 功能
-- [x] 修改微信运动步数
-- [x] 消息防撤回
-- [x] 自动通过好友请求
-- [x] 请求自动通过后发送欢迎语
-- [x] 消息自动回复(完全匹配触发)
-- [x] 统一设置群公告
-- [x] 敏感词自动踢人
-- [x] 入群欢迎语
-- [x] 群消息自动回复
-
-**统一设置群公告、敏感词自动踢人、入群欢迎语 仅对自己创建的群有效**
-
----
 
 ### 安装
 
@@ -80,11 +61,4 @@
 
 ### 免责声明
 本项目旨在学习 iOS 逆向的一点实践，不可使用于商业和个人其他意图。若使用不当，均由个人承担。如有侵权，请联系本人删除。
-
-
----
-
-#### 听说你想请我喝下午茶？😏
-
-<img src="http://upload-images.jianshu.io/upload_images/965383-cbc86dc1d75a6242.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" height="250" hspace="50"/>&nbsp;&nbsp;&nbsp;<img src="http://upload-images.jianshu.io/upload_images/965383-76a1c7c91b987e1a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" height="250" hspace="50"  />
 
